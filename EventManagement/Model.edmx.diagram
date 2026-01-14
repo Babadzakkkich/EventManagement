@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="d0b12e68097d43b7b90318058e424db8" Name="Diagram1">
+        <EntityTypeShape EntityType="МероприятияModel.Активности" Width="1.5" PointX="5.25" PointY="4.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="МероприятияModel.Города" Width="1.5" PointX="6" PointY="1.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="МероприятияModel.ЖюриАктивности" Width="1.5" PointX="10.5" PointY="4.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="МероприятияModel.Мероприятия" Width="1.5" PointX="8.25" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="МероприятияModel.Направления" Width="1.5" PointX="6" PointY="7.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="МероприятияModel.Пол" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="МероприятияModel.Пользователи" Width="1.5" PointX="3" PointY="3.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="МероприятияModel.Роли" Width="1.5" PointX="0.75" PointY="2.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="МероприятияModel.РолиЖюри" Width="1.5" PointX="8.25" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="МероприятияModel.Страны" Width="1.5" PointX="0.75" PointY="7.625" IsExpanded="true" />
+        <AssociationConnector Association="МероприятияModel.FK__Активност__Мероп__398D8EEE" ManuallyRouted="false" />
+        <AssociationConnector Association="МероприятияModel.FK__Активност__Модер__3A81B327" ManuallyRouted="false" />
+        <AssociationConnector Association="МероприятияModel.FK__ЖюриАктив__Актив__3D5E1FD2" ManuallyRouted="false" />
+        <AssociationConnector Association="МероприятияModel.FK__Мероприят__Город__34C8D9D1" ManuallyRouted="false" />
+        <AssociationConnector Association="МероприятияModel.FK__ЖюриАктив__ЖюриI__3E52440B" ManuallyRouted="false" />
+        <AssociationConnector Association="МероприятияModel.FK__ЖюриАктив__РольI__3F466844" ManuallyRouted="false" />
+        <AssociationConnector Association="МероприятияModel.FK__Мероприят__Напра__35BCFE0A" ManuallyRouted="false" />
+        <AssociationConnector Association="МероприятияModel.FK__Мероприят__Побед__36B12243" ManuallyRouted="false" />
+        <AssociationConnector Association="МероприятияModel.FK__Пользоват__ПолId__30F848ED" ManuallyRouted="false" />
+        <AssociationConnector Association="МероприятияModel.FK__Пользоват__РольI__31EC6D26" ManuallyRouted="false" />
+        <AssociationConnector Association="МероприятияModel.FK__Пользоват__Стран__300424B4" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
