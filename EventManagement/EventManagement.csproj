@@ -72,6 +72,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="NullToVisibilityConverter.cs" />
+    <Compile Include="Pages\AuthPage.xaml.cs">
+      <DependentUpon>AuthPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\EventsPage.xaml.cs">
+      <DependentUpon>EventsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ProfilePage.xaml.cs">
+      <DependentUpon>ProfilePage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Активности.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -114,6 +124,18 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Pages\AuthPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\EventsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\ProfilePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Styles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -166,6 +188,77 @@
   <ItemGroup>
     <Resource Include="Images\logo.png" />
     <Resource Include="Images\icon.ico" />
+    <Resource Include="Images\Avatars\foto1.jpg" />
+    <Resource Include="Images\Avatars\foto10.jpg" />
+    <Resource Include="Images\Avatars\foto11.jpg" />
+    <Resource Include="Images\Avatars\foto12.jpg" />
+    <Resource Include="Images\Avatars\foto13.jpg" />
+    <Resource Include="Images\Avatars\foto14.jpg" />
+    <Resource Include="Images\Avatars\foto15.jpg" />
+    <Resource Include="Images\Avatars\foto16.jpg" />
+    <Resource Include="Images\Avatars\foto17.jpg" />
+    <Resource Include="Images\Avatars\foto18.jpg" />
+    <Resource Include="Images\Avatars\foto19.jpg" />
+    <Resource Include="Images\Avatars\foto2.jpg" />
+    <Resource Include="Images\Avatars\foto20.jpg" />
+    <Resource Include="Images\Avatars\foto21.jpg" />
+    <Resource Include="Images\Avatars\foto22.jpg" />
+    <Resource Include="Images\Avatars\foto23.jpg" />
+    <Resource Include="Images\Avatars\foto24.jpg" />
+    <Resource Include="Images\Avatars\foto25.jpg" />
+    <Resource Include="Images\Avatars\foto26.jpg" />
+    <Resource Include="Images\Avatars\foto27.jpg" />
+    <Resource Include="Images\Avatars\foto28.jpg" />
+    <Resource Include="Images\Avatars\foto29.jpg" />
+    <Resource Include="Images\Avatars\foto3.jpg" />
+    <Resource Include="Images\Avatars\foto30.jpg" />
+    <Resource Include="Images\Avatars\foto31.jpg" />
+    <Resource Include="Images\Avatars\foto32.jpg" />
+    <Resource Include="Images\Avatars\foto33.jpg" />
+    <Resource Include="Images\Avatars\foto34.jpg" />
+    <Resource Include="Images\Avatars\foto35.jpg" />
+    <Resource Include="Images\Avatars\foto36.jpg" />
+    <Resource Include="Images\Avatars\foto37.jpg" />
+    <Resource Include="Images\Avatars\foto38.jpg" />
+    <Resource Include="Images\Avatars\foto39.jpg" />
+    <Resource Include="Images\Avatars\foto4.jpg" />
+    <Resource Include="Images\Avatars\foto40.jpg" />
+    <Resource Include="Images\Avatars\foto41.jpg" />
+    <Resource Include="Images\Avatars\foto42.jpg" />
+    <Resource Include="Images\Avatars\foto43.jpg" />
+    <Resource Include="Images\Avatars\foto44.jpg" />
+    <Resource Include="Images\Avatars\foto45.jpg" />
+    <Resource Include="Images\Avatars\foto46.jpg" />
+    <Resource Include="Images\Avatars\foto47.jpg" />
+    <Resource Include="Images\Avatars\foto48.jpg" />
+    <Resource Include="Images\Avatars\foto49.jpg" />
+    <Resource Include="Images\Avatars\foto5.jpg" />
+    <Resource Include="Images\Avatars\foto50.jpg" />
+    <Resource Include="Images\Avatars\foto51.jpg" />
+    <Resource Include="Images\Avatars\foto52.jpg" />
+    <Resource Include="Images\Avatars\foto53.jpg" />
+    <Resource Include="Images\Avatars\foto54.jpg" />
+    <Resource Include="Images\Avatars\foto55.jpg" />
+    <Resource Include="Images\Avatars\foto56.jpg" />
+    <Resource Include="Images\Avatars\foto57.jpg" />
+    <Resource Include="Images\Avatars\foto58.jpg" />
+    <Resource Include="Images\Avatars\foto59.jpg" />
+    <Resource Include="Images\Avatars\foto6.jpg" />
+    <Resource Include="Images\Avatars\foto60.jpg" />
+    <Resource Include="Images\Avatars\foto61.jpg" />
+    <Resource Include="Images\Avatars\foto62.jpg" />
+    <Resource Include="Images\Avatars\foto63.jpg" />
+    <Resource Include="Images\Avatars\foto64.jpg" />
+    <Resource Include="Images\Avatars\foto65.jpg" />
+    <Resource Include="Images\Avatars\foto66.jpg" />
+    <Resource Include="Images\Avatars\foto67.jpg" />
+    <Resource Include="Images\Avatars\foto68.jpg" />
+    <Resource Include="Images\Avatars\foto69.jpg" />
+    <Resource Include="Images\Avatars\foto7.jpg" />
+    <Resource Include="Images\Avatars\foto70.jpg" />
+    <Resource Include="Images\Avatars\foto8.jpg" />
+    <Resource Include="Images\Avatars\foto9.jpg" />
+    <Resource Include="Images\default-avatar.png" />
     <Content Include="Model.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Model.Context.cs</LastGenOutput>

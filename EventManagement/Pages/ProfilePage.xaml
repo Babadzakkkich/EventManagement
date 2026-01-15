@@ -1,0 +1,206 @@
+﻿<Page x:Class="EventManagement.Pages.ProfilePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Мой профиль">
+
+    <Grid Background="{StaticResource PrimaryBackgroundBrush}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="20" MaxWidth="800">
+
+                <!-- Заголовок -->
+                <TextBlock Text="Мой профиль" 
+                          Style="{StaticResource HeaderTextStyle}"
+                          Margin="0,0,0,20"/>
+
+                <!-- Аватарка и основная информация -->
+                <Border Style="{StaticResource EventCardStyle}" Margin="0,0,0,20">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Аватарка -->
+                        <Border Grid.Column="0" 
+                                Margin="0,0,20,0">
+                            <Grid>
+                                <Image x:Name="ProfileAvatarImage" 
+                                       Width="120" 
+                                       Height="120"
+                                       Stretch="UniformToFill">
+                                    <Image.Clip>
+                                        <EllipseGeometry RadiusX="60" RadiusY="60" Center="60,60"/>
+                                    </Image.Clip>
+                                </Image>
+
+                                <!-- Кнопка смены аватарки -->
+                                <Button Content="Изменить фото" 
+                                        Style="{StaticResource SecondaryButtonStyle}"
+                                        Margin="0"
+                                        Padding="5"
+                                        Height="30"
+                                        VerticalAlignment="Bottom"
+                                        HorizontalAlignment="Center"
+                                        Click="ChangeAvatarButton_Click"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Основная информация -->
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="{Binding CurrentUser.ФИО}" 
+                                      Style="{StaticResource SubHeaderTextStyle}"/>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                <TextBlock Text="Роль: " 
+                                          Style="{StaticResource NormalTextStyle}"/>
+                                <TextBlock Text="{Binding CurrentUser.Роли.Название}" 
+                                          Style="{StaticResource NormalTextStyle}"
+                                          FontWeight="Bold"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                <TextBlock Text="Email: " 
+                                          Style="{StaticResource NormalTextStyle}"/>
+                                <TextBlock Text="{Binding CurrentUser.Почта}" 
+                                          Style="{StaticResource NormalTextStyle}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Форма редактирования -->
+                <Border Style="{StaticResource EventCardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="Редактирование данных" 
+                                  Style="{StaticResource SubHeaderTextStyle}"
+                                  Margin="0,0,0,15"/>
+
+                        <!-- ФИО -->
+                        <Label Content="ФИО:" Style="{StaticResource PrimaryLabelStyle}"/>
+                        <TextBox x:Name="FioTextBox" 
+                                Text="{Binding CurrentUser.ФИО, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource PrimaryTextBoxStyle}"/>
+
+                        <!-- Email -->
+                        <Label Content="Электронная почта:" 
+                               Style="{StaticResource PrimaryLabelStyle}"
+                               Margin="0,10,0,0"/>
+                        <TextBox x:Name="EmailTextBox" 
+                                Text="{Binding CurrentUser.Почта, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource PrimaryTextBoxStyle}"/>
+
+                        <!-- Телефон -->
+                        <Label Content="Телефон:" 
+                               Style="{StaticResource PrimaryLabelStyle}"
+                               Margin="0,10,0,0"/>
+                        <TextBox x:Name="PhoneTextBox" 
+                                Text="{Binding CurrentUser.Телефон, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource PrimaryTextBoxStyle}"/>
+
+                        <!-- Дата рождения -->
+                        <Label Content="Дата рождения:" 
+                               Style="{StaticResource PrimaryLabelStyle}"
+                               Margin="0,10,0,0"/>
+                        <DatePicker x:Name="BirthDatePicker"
+                                   SelectedDate="{Binding CurrentUser.ДатаРождения}"
+                                   Style="{StaticResource PrimaryDatePickerStyle}"/>
+
+                        <!-- Изменение пароля -->
+                        <Expander Header="Изменить пароль" 
+                                 Margin="0,20,0,0">
+                            <StackPanel Margin="0,10,0,0">
+
+                                <!-- Старый пароль -->
+                                <Label Content="Текущий пароль:" Style="{StaticResource PrimaryLabelStyle}"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <PasswordBox x:Name="OldPasswordBox" 
+                                                Grid.Column="0"
+                                                BorderThickness="1,1,0,1"/>
+                                    <CheckBox x:Name="ShowOldPasswordCheckBox"
+                                             Grid.Column="1"
+                                             Content="Показать"
+                                             Margin="0,5,5,5"
+                                             Checked="ShowPassword_Checked"
+                                             Unchecked="ShowPassword_Unchecked"/>
+                                </Grid>
+                                <TextBox x:Name="OldPasswordTextBox"
+                                        Visibility="Collapsed"
+                                        Style="{StaticResource PrimaryTextBoxStyle}"
+                                        BorderThickness="1,1,0,1"/>
+
+                                <!-- Новый пароль -->
+                                <Label Content="Новый пароль:" 
+                                       Style="{StaticResource PrimaryLabelStyle}"
+                                       Margin="0,10,0,0"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <PasswordBox x:Name="NewPasswordBox" 
+                                                Grid.Column="0"
+                                                BorderThickness="1,1,0,1"/>
+                                    <CheckBox x:Name="ShowNewPasswordCheckBox"
+                                             Grid.Column="1"
+                                             Content="Показать"
+                                             Margin="0,5,5,5"
+                                             Checked="ShowPassword_Checked"
+                                             Unchecked="ShowPassword_Unchecked"/>
+                                </Grid>
+                                <TextBox x:Name="NewPasswordTextBox"
+                                        Visibility="Collapsed"
+                                        Style="{StaticResource PrimaryTextBoxStyle}"
+                                        BorderThickness="1,1,0,1"/>
+
+                                <!-- Подтверждение пароля -->
+                                <Label Content="Подтверждение пароля:" 
+                                       Style="{StaticResource PrimaryLabelStyle}"
+                                       Margin="0,10,0,0"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <PasswordBox x:Name="ConfirmPasswordBox" 
+                                                Grid.Column="0"
+                                                BorderThickness="1,1,0,1"/>
+                                    <CheckBox x:Name="ShowConfirmPasswordCheckBox"
+                                             Grid.Column="1"
+                                             Content="Показать"
+                                             Margin="0,5,5,5"
+                                             Checked="ShowPassword_Checked"
+                                             Unchecked="ShowPassword_Unchecked"/>
+                                </Grid>
+                                <TextBox x:Name="ConfirmPasswordTextBox"
+                                        Visibility="Collapsed"
+                                        Style="{StaticResource PrimaryTextBoxStyle}"
+                                        BorderThickness="1,1,0,1"/>
+
+                                <TextBlock Text="Оставьте поля пустыми, если не хотите менять пароль"
+                                          Style="{StaticResource HintTextStyle}"
+                                          Margin="0,10,0,0"/>
+                            </StackPanel>
+                        </Expander>
+
+                        <!-- Кнопки сохранения -->
+                        <StackPanel Orientation="Horizontal" 
+                                   HorizontalAlignment="Right"
+                                   Margin="0,20,0,0">
+                            <Button Content="Сохранить" 
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Click="SaveButton_Click"/>
+                            <Button Content="Отмена" 
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    Margin="10,0,0,0"
+                                    Click="CancelButton_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

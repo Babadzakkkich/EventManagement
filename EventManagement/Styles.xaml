@@ -1,11 +1,12 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:EventManagement">
 
     <!-- Цвета из требований -->
     <Color x:Key="PrimaryBackgroundColor">#FFFFFFFF</Color>
     <Color x:Key="SecondaryBackgroundColor">#FFABCFCE</Color>
     <Color x:Key="AccentColor">#FF546F9A</Color>
-
+    
     <!-- Кисти на основе цветов -->
     <SolidColorBrush x:Key="PrimaryBackgroundBrush" Color="{StaticResource PrimaryBackgroundColor}"/>
     <SolidColorBrush x:Key="SecondaryBackgroundBrush" Color="{StaticResource SecondaryBackgroundColor}"/>

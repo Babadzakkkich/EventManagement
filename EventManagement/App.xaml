@@ -3,9 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:EventManagement"
              StartupUri="MainWindow.xaml">
+
     <Application.Resources>
         <ResourceDictionary>
+            <local:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+
             <ResourceDictionary.MergedDictionaries>
+                <!-- Замените на путь к вашему файлу стилей -->
                 <ResourceDictionary Source="Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

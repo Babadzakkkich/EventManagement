@@ -8,7 +8,7 @@
         <EntityTypeShape EntityType="МероприятияModel.Активности" Width="1.5" PointX="5.25" PointY="4.125" IsExpanded="true" />
         <EntityTypeShape EntityType="МероприятияModel.Города" Width="1.5" PointX="6" PointY="1.625" IsExpanded="true" />
         <EntityTypeShape EntityType="МероприятияModel.ЖюриАктивности" Width="1.5" PointX="10.5" PointY="4.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="МероприятияModel.Мероприятия" Width="1.5" PointX="8.25" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="МероприятияModel.Мероприятия" Width="1.5" PointX="8.375" PointY="3.5" IsExpanded="true" />
         <EntityTypeShape EntityType="МероприятияModel.Направления" Width="1.5" PointX="6" PointY="7.875" IsExpanded="true" />
         <EntityTypeShape EntityType="МероприятияModel.Пол" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="МероприятияModel.Пользователи" Width="1.5" PointX="3" PointY="3.5" IsExpanded="true" />
