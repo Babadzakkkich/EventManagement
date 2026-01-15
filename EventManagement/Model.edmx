@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="Хранилище МероприятияModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="Хранилище Model" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Активности">
           <Key>
             <PropertyRef Name="Id" />
@@ -38,11 +38,13 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Название" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="Описание" Type="nvarchar(max)" />
           <Property Name="ДатаНачала" Type="datetime" Nullable="false" />
           <Property Name="ДлительностьДней" Type="int" Nullable="false" />
           <Property Name="ГородId" Type="int" Nullable="false" />
           <Property Name="НаправлениеId" Type="int" Nullable="false" />
           <Property Name="ПобедительId" Type="int" />
+          <Property Name="ОрганизаторId" Type="int" Nullable="false" />
           <Property Name="Фото" Type="nvarchar" MaxLength="100" Nullable="false" />
         </EntityType>
         <EntityType Name="Направления">
@@ -51,6 +53,17 @@
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="Название" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Оценки">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ЖюриАктивностиId" Type="int" Nullable="false" />
+          <Property Name="УчастникАктивностиId" Type="int" Nullable="false" />
+          <Property Name="Оценка" Type="int" Nullable="false" />
+          <Property Name="Комментарий" Type="nvarchar" MaxLength="500" />
+          <Property Name="ДатаОценки" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="Пол">
           <Key>
@@ -98,7 +111,15 @@
           <Property Name="Код" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="Код2" Type="int" Nullable="false" />
         </EntityType>
-        <Association Name="FK__Активност__Мероп__398D8EEE">
+        <EntityType Name="УчастникиАктивностей">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ПользовательId" Type="int" Nullable="false" />
+          <Property Name="АктивностьId" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__Активност__Мероп__3E52440B">
           <End Role="Мероприятия" Type="Self.Мероприятия" Multiplicity="1" />
           <End Role="Активности" Type="Self.Активности" Multiplicity="*" />
           <ReferentialConstraint>
@@ -110,7 +131,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Активност__Модер__3A81B327">
+        <Association Name="FK__Активност__Модер__3F466844">
           <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="1" />
           <End Role="Активности" Type="Self.Активности" Multiplicity="*" />
           <ReferentialConstraint>
@@ -122,7 +143,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ЖюриАктив__Актив__3D5E1FD2">
+        <Association Name="FK__ЖюриАктив__Актив__45F365D3">
           <End Role="Активности" Type="Self.Активности" Multiplicity="1" />
           <End Role="ЖюриАктивности" Type="Self.ЖюриАктивности" Multiplicity="*" />
           <ReferentialConstraint>
@@ -134,7 +155,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ЖюриАктив__ЖюриI__3E52440B">
+        <Association Name="FK__ЖюриАктив__ЖюриI__46E78A0C">
           <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="1" />
           <End Role="ЖюриАктивности" Type="Self.ЖюриАктивности" Multiplicity="*" />
           <ReferentialConstraint>
@@ -146,7 +167,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ЖюриАктив__РольI__3F466844">
+        <Association Name="FK__ЖюриАктив__РольI__47DBAE45">
           <End Role="РолиЖюри" Type="Self.РолиЖюри" Multiplicity="1" />
           <End Role="ЖюриАктивности" Type="Self.ЖюриАктивности" Multiplicity="*" />
           <ReferentialConstraint>
@@ -182,6 +203,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__Мероприят__Орган__37A5467C">
+          <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="1" />
+          <End Role="Мероприятия" Type="Self.Мероприятия" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пользователи">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Мероприятия">
+              <PropertyRef Name="ОрганизаторId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__Мероприят__Побед__36B12243">
           <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="0..1" />
           <End Role="Мероприятия" Type="Self.Мероприятия" Multiplicity="*" />
@@ -191,6 +224,30 @@
             </Principal>
             <Dependent Role="Мероприятия">
               <PropertyRef Name="ПобедительId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Оценки__ЖюриАкти__4BAC3F29">
+          <End Role="ЖюриАктивности" Type="Self.ЖюриАктивности" Multiplicity="1" />
+          <End Role="Оценки" Type="Self.Оценки" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ЖюриАктивности">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Оценки">
+              <PropertyRef Name="ЖюриАктивностиId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Оценки__Участник__4CA06362">
+          <End Role="УчастникиАктивностей" Type="Self.УчастникиАктивностей" Multiplicity="1" />
+          <End Role="Оценки" Type="Self.Оценки" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="УчастникиАктивностей">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Оценки">
+              <PropertyRef Name="УчастникАктивностиId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -230,34 +287,60 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="Хранилище МероприятияModelContainer">
+        <Association Name="FK__Участники__Актив__4316F928">
+          <End Role="Активности" Type="Self.Активности" Multiplicity="1" />
+          <End Role="УчастникиАктивностей" Type="Self.УчастникиАктивностей" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Активности">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="УчастникиАктивностей">
+              <PropertyRef Name="АктивностьId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Участники__Польз__4222D4EF">
+          <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="1" />
+          <End Role="УчастникиАктивностей" Type="Self.УчастникиАктивностей" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пользователи">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="УчастникиАктивностей">
+              <PropertyRef Name="ПользовательId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Хранилище ModelContainer">
           <EntitySet Name="Активности" EntityType="Self.Активности" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Города" EntityType="Self.Города" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ЖюриАктивности" EntityType="Self.ЖюриАктивности" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Мероприятия" EntityType="Self.Мероприятия" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Направления" EntityType="Self.Направления" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Оценки" EntityType="Self.Оценки" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Пол" EntityType="Self.Пол" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Пользователи" EntityType="Self.Пользователи" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Роли" EntityType="Self.Роли" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="РолиЖюри" EntityType="Self.РолиЖюри" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Страны" EntityType="Self.Страны" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__Активност__Мероп__398D8EEE" Association="Self.FK__Активност__Мероп__398D8EEE">
+          <EntitySet Name="УчастникиАктивностей" EntityType="Self.УчастникиАктивностей" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Активност__Мероп__3E52440B" Association="Self.FK__Активност__Мероп__3E52440B">
             <End Role="Мероприятия" EntitySet="Мероприятия" />
             <End Role="Активности" EntitySet="Активности" />
           </AssociationSet>
-          <AssociationSet Name="FK__Активност__Модер__3A81B327" Association="Self.FK__Активност__Модер__3A81B327">
+          <AssociationSet Name="FK__Активност__Модер__3F466844" Association="Self.FK__Активност__Модер__3F466844">
             <End Role="Пользователи" EntitySet="Пользователи" />
             <End Role="Активности" EntitySet="Активности" />
           </AssociationSet>
-          <AssociationSet Name="FK__ЖюриАктив__Актив__3D5E1FD2" Association="Self.FK__ЖюриАктив__Актив__3D5E1FD2">
+          <AssociationSet Name="FK__ЖюриАктив__Актив__45F365D3" Association="Self.FK__ЖюриАктив__Актив__45F365D3">
             <End Role="Активности" EntitySet="Активности" />
             <End Role="ЖюриАктивности" EntitySet="ЖюриАктивности" />
           </AssociationSet>
-          <AssociationSet Name="FK__ЖюриАктив__ЖюриI__3E52440B" Association="Self.FK__ЖюриАктив__ЖюриI__3E52440B">
+          <AssociationSet Name="FK__ЖюриАктив__ЖюриI__46E78A0C" Association="Self.FK__ЖюриАктив__ЖюриI__46E78A0C">
             <End Role="Пользователи" EntitySet="Пользователи" />
             <End Role="ЖюриАктивности" EntitySet="ЖюриАктивности" />
           </AssociationSet>
-          <AssociationSet Name="FK__ЖюриАктив__РольI__3F466844" Association="Self.FK__ЖюриАктив__РольI__3F466844">
+          <AssociationSet Name="FK__ЖюриАктив__РольI__47DBAE45" Association="Self.FK__ЖюриАктив__РольI__47DBAE45">
             <End Role="РолиЖюри" EntitySet="РолиЖюри" />
             <End Role="ЖюриАктивности" EntitySet="ЖюриАктивности" />
           </AssociationSet>
@@ -269,9 +352,21 @@
             <End Role="Направления" EntitySet="Направления" />
             <End Role="Мероприятия" EntitySet="Мероприятия" />
           </AssociationSet>
+          <AssociationSet Name="FK__Мероприят__Орган__37A5467C" Association="Self.FK__Мероприят__Орган__37A5467C">
+            <End Role="Пользователи" EntitySet="Пользователи" />
+            <End Role="Мероприятия" EntitySet="Мероприятия" />
+          </AssociationSet>
           <AssociationSet Name="FK__Мероприят__Побед__36B12243" Association="Self.FK__Мероприят__Побед__36B12243">
             <End Role="Пользователи" EntitySet="Пользователи" />
             <End Role="Мероприятия" EntitySet="Мероприятия" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Оценки__ЖюриАкти__4BAC3F29" Association="Self.FK__Оценки__ЖюриАкти__4BAC3F29">
+            <End Role="ЖюриАктивности" EntitySet="ЖюриАктивности" />
+            <End Role="Оценки" EntitySet="Оценки" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Оценки__Участник__4CA06362" Association="Self.FK__Оценки__Участник__4CA06362">
+            <End Role="УчастникиАктивностей" EntitySet="УчастникиАктивностей" />
+            <End Role="Оценки" EntitySet="Оценки" />
           </AssociationSet>
           <AssociationSet Name="FK__Пользоват__ПолId__30F848ED" Association="Self.FK__Пользоват__ПолId__30F848ED">
             <End Role="Пол" EntitySet="Пол" />
@@ -285,12 +380,20 @@
             <End Role="Страны" EntitySet="Страны" />
             <End Role="Пользователи" EntitySet="Пользователи" />
           </AssociationSet>
+          <AssociationSet Name="FK__Участники__Актив__4316F928" Association="Self.FK__Участники__Актив__4316F928">
+            <End Role="Активности" EntitySet="Активности" />
+            <End Role="УчастникиАктивностей" EntitySet="УчастникиАктивностей" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Участники__Польз__4222D4EF" Association="Self.FK__Участники__Польз__4222D4EF">
+            <End Role="Пользователи" EntitySet="Пользователи" />
+            <End Role="УчастникиАктивностей" EntitySet="УчастникиАктивностей" />
+          </AssociationSet>
         </EntityContainer>
       </Schema>
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="МероприятияModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="Активности">
           <Key>
             <PropertyRef Name="Id" />
@@ -301,9 +404,10 @@
           <Property Name="День" Type="Int32" Nullable="false" />
           <Property Name="ВремяНачала" Type="Time" Nullable="false" Precision="7" />
           <Property Name="МодераторId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Мероприятия" Relationship="Self.FK__Активност__Мероп__398D8EEE" FromRole="Активности" ToRole="Мероприятия" />
-          <NavigationProperty Name="Пользователи" Relationship="Self.FK__Активност__Модер__3A81B327" FromRole="Активности" ToRole="Пользователи" />
-          <NavigationProperty Name="ЖюриАктивности" Relationship="Self.FK__ЖюриАктив__Актив__3D5E1FD2" FromRole="Активности" ToRole="ЖюриАктивности" />
+          <NavigationProperty Name="Мероприятия" Relationship="Self.FK__Активност__Мероп__3E52440B" FromRole="Активности" ToRole="Мероприятия" />
+          <NavigationProperty Name="Пользователи" Relationship="Self.FK__Активност__Модер__3F466844" FromRole="Активности" ToRole="Пользователи" />
+          <NavigationProperty Name="ЖюриАктивности" Relationship="Self.FK__ЖюриАктив__Актив__45F365D3" FromRole="Активности" ToRole="ЖюриАктивности" />
+          <NavigationProperty Name="УчастникиАктивностей" Relationship="Self.FK__Участники__Актив__4316F928" FromRole="Активности" ToRole="УчастникиАктивностей" />
         </EntityType>
         <EntityType Name="Города">
           <Key>
@@ -321,9 +425,10 @@
           <Property Name="АктивностьId" Type="Int32" Nullable="false" />
           <Property Name="ЖюриId" Type="Int32" Nullable="false" />
           <Property Name="РольId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Активности" Relationship="Self.FK__ЖюриАктив__Актив__3D5E1FD2" FromRole="ЖюриАктивности" ToRole="Активности" />
-          <NavigationProperty Name="Пользователи" Relationship="Self.FK__ЖюриАктив__ЖюриI__3E52440B" FromRole="ЖюриАктивности" ToRole="Пользователи" />
-          <NavigationProperty Name="РолиЖюри" Relationship="Self.FK__ЖюриАктив__РольI__3F466844" FromRole="ЖюриАктивности" ToRole="РолиЖюри" />
+          <NavigationProperty Name="Активности" Relationship="Self.FK__ЖюриАктив__Актив__45F365D3" FromRole="ЖюриАктивности" ToRole="Активности" />
+          <NavigationProperty Name="Пользователи" Relationship="Self.FK__ЖюриАктив__ЖюриI__46E78A0C" FromRole="ЖюриАктивности" ToRole="Пользователи" />
+          <NavigationProperty Name="РолиЖюри" Relationship="Self.FK__ЖюриАктив__РольI__47DBAE45" FromRole="ЖюриАктивности" ToRole="РолиЖюри" />
+          <NavigationProperty Name="Оценки" Relationship="Self.FK__Оценки__ЖюриАкти__4BAC3F29" FromRole="ЖюриАктивности" ToRole="Оценки" />
         </EntityType>
         <EntityType Name="Мероприятия">
           <Key>
@@ -331,16 +436,19 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Название" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Описание" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ДатаНачала" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ДлительностьДней" Type="Int32" Nullable="false" />
           <Property Name="ГородId" Type="Int32" Nullable="false" />
           <Property Name="НаправлениеId" Type="Int32" Nullable="false" />
           <Property Name="ПобедительId" Type="Int32" />
+          <Property Name="ОрганизаторId" Type="Int32" Nullable="false" />
           <Property Name="Фото" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Активности" Relationship="Self.FK__Активност__Мероп__398D8EEE" FromRole="Мероприятия" ToRole="Активности" />
+          <NavigationProperty Name="Активности" Relationship="Self.FK__Активност__Мероп__3E52440B" FromRole="Мероприятия" ToRole="Активности" />
           <NavigationProperty Name="Города" Relationship="Self.FK__Мероприят__Город__34C8D9D1" FromRole="Мероприятия" ToRole="Города" />
           <NavigationProperty Name="Направления" Relationship="Self.FK__Мероприят__Напра__35BCFE0A" FromRole="Мероприятия" ToRole="Направления" />
-          <NavigationProperty Name="Пользователи" Relationship="Self.FK__Мероприят__Побед__36B12243" FromRole="Мероприятия" ToRole="Пользователи" />
+          <NavigationProperty Name="Пользователи" Relationship="Self.FK__Мероприят__Орган__37A5467C" FromRole="Мероприятия" ToRole="Пользователи" />
+          <NavigationProperty Name="Пользователи1" Relationship="Self.FK__Мероприят__Побед__36B12243" FromRole="Мероприятия" ToRole="Пользователи" />
         </EntityType>
         <EntityType Name="Направления">
           <Key>
@@ -349,6 +457,19 @@
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="Название" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Мероприятия" Relationship="Self.FK__Мероприят__Напра__35BCFE0A" FromRole="Направления" ToRole="Мероприятия" />
+        </EntityType>
+        <EntityType Name="Оценки">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ЖюриАктивностиId" Type="Int32" Nullable="false" />
+          <Property Name="УчастникАктивностиId" Type="Int32" Nullable="false" />
+          <Property Name="Оценка" Type="Int32" Nullable="false" />
+          <Property Name="Комментарий" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ДатаОценки" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="ЖюриАктивности" Relationship="Self.FK__Оценки__ЖюриАкти__4BAC3F29" FromRole="Оценки" ToRole="ЖюриАктивности" />
+          <NavigationProperty Name="УчастникиАктивностей" Relationship="Self.FK__Оценки__Участник__4CA06362" FromRole="Оценки" ToRole="УчастникиАктивностей" />
         </EntityType>
         <EntityType Name="Пол">
           <Key>
@@ -372,12 +493,14 @@
           <Property Name="Фото" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="ПолId" Type="Int32" Nullable="false" />
           <Property Name="РольId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Активности" Relationship="Self.FK__Активност__Модер__3A81B327" FromRole="Пользователи" ToRole="Активности" />
-          <NavigationProperty Name="ЖюриАктивности" Relationship="Self.FK__ЖюриАктив__ЖюриI__3E52440B" FromRole="Пользователи" ToRole="ЖюриАктивности" />
-          <NavigationProperty Name="Мероприятия" Relationship="Self.FK__Мероприят__Побед__36B12243" FromRole="Пользователи" ToRole="Мероприятия" />
+          <NavigationProperty Name="Активности" Relationship="Self.FK__Активност__Модер__3F466844" FromRole="Пользователи" ToRole="Активности" />
+          <NavigationProperty Name="ЖюриАктивности" Relationship="Self.FK__ЖюриАктив__ЖюриI__46E78A0C" FromRole="Пользователи" ToRole="ЖюриАктивности" />
+          <NavigationProperty Name="Мероприятия" Relationship="Self.FK__Мероприят__Орган__37A5467C" FromRole="Пользователи" ToRole="Мероприятия" />
+          <NavigationProperty Name="Мероприятия1" Relationship="Self.FK__Мероприят__Побед__36B12243" FromRole="Пользователи" ToRole="Мероприятия" />
           <NavigationProperty Name="Пол" Relationship="Self.FK__Пользоват__ПолId__30F848ED" FromRole="Пользователи" ToRole="Пол" />
           <NavigationProperty Name="Роли" Relationship="Self.FK__Пользоват__РольI__31EC6D26" FromRole="Пользователи" ToRole="Роли" />
           <NavigationProperty Name="Страны" Relationship="Self.FK__Пользоват__Стран__300424B4" FromRole="Пользователи" ToRole="Страны" />
+          <NavigationProperty Name="УчастникиАктивностей" Relationship="Self.FK__Участники__Польз__4222D4EF" FromRole="Пользователи" ToRole="УчастникиАктивностей" />
         </EntityType>
         <EntityType Name="Роли">
           <Key>
@@ -393,7 +516,7 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="Название" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="ЖюриАктивности" Relationship="Self.FK__ЖюриАктив__РольI__3F466844" FromRole="РолиЖюри" ToRole="ЖюриАктивности" />
+          <NavigationProperty Name="ЖюриАктивности" Relationship="Self.FK__ЖюриАктив__РольI__47DBAE45" FromRole="РолиЖюри" ToRole="ЖюриАктивности" />
         </EntityType>
         <EntityType Name="Страны">
           <Key>
@@ -406,7 +529,18 @@
           <Property Name="Код2" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Пользователи" Relationship="Self.FK__Пользоват__Стран__300424B4" FromRole="Страны" ToRole="Пользователи" />
         </EntityType>
-        <Association Name="FK__Активност__Мероп__398D8EEE">
+        <EntityType Name="УчастникиАктивностей">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ПользовательId" Type="Int32" Nullable="false" />
+          <Property Name="АктивностьId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Активности" Relationship="Self.FK__Участники__Актив__4316F928" FromRole="УчастникиАктивностей" ToRole="Активности" />
+          <NavigationProperty Name="Оценки" Relationship="Self.FK__Оценки__Участник__4CA06362" FromRole="УчастникиАктивностей" ToRole="Оценки" />
+          <NavigationProperty Name="Пользователи" Relationship="Self.FK__Участники__Польз__4222D4EF" FromRole="УчастникиАктивностей" ToRole="Пользователи" />
+        </EntityType>
+        <Association Name="FK__Активност__Мероп__3E52440B">
           <End Role="Мероприятия" Type="Self.Мероприятия" Multiplicity="1" />
           <End Role="Активности" Type="Self.Активности" Multiplicity="*" />
           <ReferentialConstraint>
@@ -418,7 +552,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Активност__Модер__3A81B327">
+        <Association Name="FK__Активност__Модер__3F466844">
           <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="1" />
           <End Role="Активности" Type="Self.Активности" Multiplicity="*" />
           <ReferentialConstraint>
@@ -430,7 +564,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ЖюриАктив__Актив__3D5E1FD2">
+        <Association Name="FK__ЖюриАктив__Актив__45F365D3">
           <End Role="Активности" Type="Self.Активности" Multiplicity="1" />
           <End Role="ЖюриАктивности" Type="Self.ЖюриАктивности" Multiplicity="*" />
           <ReferentialConstraint>
@@ -438,6 +572,18 @@
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="ЖюриАктивности">
+              <PropertyRef Name="АктивностьId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Участники__Актив__4316F928">
+          <End Role="Активности" Type="Self.Активности" Multiplicity="1" />
+          <End Role="УчастникиАктивностей" Type="Self.УчастникиАктивностей" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Активности">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="УчастникиАктивностей">
               <PropertyRef Name="АктивностьId" />
             </Dependent>
           </ReferentialConstraint>
@@ -454,7 +600,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ЖюриАктив__ЖюриI__3E52440B">
+        <Association Name="FK__ЖюриАктив__ЖюриI__46E78A0C">
           <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="1" />
           <End Role="ЖюриАктивности" Type="Self.ЖюриАктивности" Multiplicity="*" />
           <ReferentialConstraint>
@@ -466,7 +612,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ЖюриАктив__РольI__3F466844">
+        <Association Name="FK__ЖюриАктив__РольI__47DBAE45">
           <End Role="РолиЖюри" Type="Self.РолиЖюри" Multiplicity="1" />
           <End Role="ЖюриАктивности" Type="Self.ЖюриАктивности" Multiplicity="*" />
           <ReferentialConstraint>
@@ -475,6 +621,18 @@
             </Principal>
             <Dependent Role="ЖюриАктивности">
               <PropertyRef Name="РольId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Оценки__ЖюриАкти__4BAC3F29">
+          <End Role="ЖюриАктивности" Type="Self.ЖюриАктивности" Multiplicity="1" />
+          <End Role="Оценки" Type="Self.Оценки" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ЖюриАктивности">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Оценки">
+              <PropertyRef Name="ЖюриАктивностиId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -490,6 +648,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__Мероприят__Орган__37A5467C">
+          <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="1" />
+          <End Role="Мероприятия" Type="Self.Мероприятия" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пользователи">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Мероприятия">
+              <PropertyRef Name="ОрганизаторId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__Мероприят__Побед__36B12243">
           <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="0..1" />
           <End Role="Мероприятия" Type="Self.Мероприятия" Multiplicity="*" />
@@ -499,6 +669,18 @@
             </Principal>
             <Dependent Role="Мероприятия">
               <PropertyRef Name="ПобедительId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Оценки__Участник__4CA06362">
+          <End Role="УчастникиАктивностей" Type="Self.УчастникиАктивностей" Multiplicity="1" />
+          <End Role="Оценки" Type="Self.Оценки" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="УчастникиАктивностей">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Оценки">
+              <PropertyRef Name="УчастникАктивностиId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -538,48 +720,78 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__Участники__Польз__4222D4EF">
+          <End Role="Пользователи" Type="Self.Пользователи" Multiplicity="1" />
+          <End Role="УчастникиАктивностей" Type="Self.УчастникиАктивностей" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Пользователи">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="УчастникиАктивностей">
+              <PropertyRef Name="ПользовательId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Активности" EntityType="Self.Активности" />
           <EntitySet Name="Города" EntityType="Self.Города" />
           <EntitySet Name="ЖюриАктивности" EntityType="Self.ЖюриАктивности" />
           <EntitySet Name="Мероприятия" EntityType="Self.Мероприятия" />
           <EntitySet Name="Направления" EntityType="Self.Направления" />
+          <EntitySet Name="Оценки" EntityType="Self.Оценки" />
           <EntitySet Name="Пол" EntityType="Self.Пол" />
           <EntitySet Name="Пользователи" EntityType="Self.Пользователи" />
           <EntitySet Name="Роли" EntityType="Self.Роли" />
           <EntitySet Name="РолиЖюри" EntityType="Self.РолиЖюри" />
           <EntitySet Name="Страны" EntityType="Self.Страны" />
-          <AssociationSet Name="FK__Активност__Мероп__398D8EEE" Association="Self.FK__Активност__Мероп__398D8EEE">
+          <EntitySet Name="УчастникиАктивностей" EntityType="Self.УчастникиАктивностей" />
+          <AssociationSet Name="FK__Активност__Мероп__3E52440B" Association="Self.FK__Активност__Мероп__3E52440B">
             <End Role="Мероприятия" EntitySet="Мероприятия" />
             <End Role="Активности" EntitySet="Активности" />
           </AssociationSet>
-          <AssociationSet Name="FK__Активност__Модер__3A81B327" Association="Self.FK__Активност__Модер__3A81B327">
+          <AssociationSet Name="FK__Активност__Модер__3F466844" Association="Self.FK__Активност__Модер__3F466844">
             <End Role="Пользователи" EntitySet="Пользователи" />
             <End Role="Активности" EntitySet="Активности" />
           </AssociationSet>
-          <AssociationSet Name="FK__ЖюриАктив__Актив__3D5E1FD2" Association="Self.FK__ЖюриАктив__Актив__3D5E1FD2">
+          <AssociationSet Name="FK__ЖюриАктив__Актив__45F365D3" Association="Self.FK__ЖюриАктив__Актив__45F365D3">
             <End Role="Активности" EntitySet="Активности" />
             <End Role="ЖюриАктивности" EntitySet="ЖюриАктивности" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Участники__Актив__4316F928" Association="Self.FK__Участники__Актив__4316F928">
+            <End Role="Активности" EntitySet="Активности" />
+            <End Role="УчастникиАктивностей" EntitySet="УчастникиАктивностей" />
           </AssociationSet>
           <AssociationSet Name="FK__Мероприят__Город__34C8D9D1" Association="Self.FK__Мероприят__Город__34C8D9D1">
             <End Role="Города" EntitySet="Города" />
             <End Role="Мероприятия" EntitySet="Мероприятия" />
           </AssociationSet>
-          <AssociationSet Name="FK__ЖюриАктив__ЖюриI__3E52440B" Association="Self.FK__ЖюриАктив__ЖюриI__3E52440B">
+          <AssociationSet Name="FK__ЖюриАктив__ЖюриI__46E78A0C" Association="Self.FK__ЖюриАктив__ЖюриI__46E78A0C">
             <End Role="Пользователи" EntitySet="Пользователи" />
             <End Role="ЖюриАктивности" EntitySet="ЖюриАктивности" />
           </AssociationSet>
-          <AssociationSet Name="FK__ЖюриАктив__РольI__3F466844" Association="Self.FK__ЖюриАктив__РольI__3F466844">
+          <AssociationSet Name="FK__ЖюриАктив__РольI__47DBAE45" Association="Self.FK__ЖюриАктив__РольI__47DBAE45">
             <End Role="РолиЖюри" EntitySet="РолиЖюри" />
             <End Role="ЖюриАктивности" EntitySet="ЖюриАктивности" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Оценки__ЖюриАкти__4BAC3F29" Association="Self.FK__Оценки__ЖюриАкти__4BAC3F29">
+            <End Role="ЖюриАктивности" EntitySet="ЖюриАктивности" />
+            <End Role="Оценки" EntitySet="Оценки" />
           </AssociationSet>
           <AssociationSet Name="FK__Мероприят__Напра__35BCFE0A" Association="Self.FK__Мероприят__Напра__35BCFE0A">
             <End Role="Направления" EntitySet="Направления" />
             <End Role="Мероприятия" EntitySet="Мероприятия" />
           </AssociationSet>
+          <AssociationSet Name="FK__Мероприят__Орган__37A5467C" Association="Self.FK__Мероприят__Орган__37A5467C">
+            <End Role="Пользователи" EntitySet="Пользователи" />
+            <End Role="Мероприятия" EntitySet="Мероприятия" />
+          </AssociationSet>
           <AssociationSet Name="FK__Мероприят__Побед__36B12243" Association="Self.FK__Мероприят__Побед__36B12243">
             <End Role="Пользователи" EntitySet="Пользователи" />
             <End Role="Мероприятия" EntitySet="Мероприятия" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Оценки__Участник__4CA06362" Association="Self.FK__Оценки__Участник__4CA06362">
+            <End Role="УчастникиАктивностей" EntitySet="УчастникиАктивностей" />
+            <End Role="Оценки" EntitySet="Оценки" />
           </AssociationSet>
           <AssociationSet Name="FK__Пользоват__ПолId__30F848ED" Association="Self.FK__Пользоват__ПолId__30F848ED">
             <End Role="Пол" EntitySet="Пол" />
@@ -593,15 +805,19 @@
             <End Role="Страны" EntitySet="Страны" />
             <End Role="Пользователи" EntitySet="Пользователи" />
           </AssociationSet>
+          <AssociationSet Name="FK__Участники__Польз__4222D4EF" Association="Self.FK__Участники__Польз__4222D4EF">
+            <End Role="Пользователи" EntitySet="Пользователи" />
+            <End Role="УчастникиАктивностей" EntitySet="УчастникиАктивностей" />
+          </AssociationSet>
         </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="Хранилище МероприятияModelContainer" CdmEntityContainer="Entities">
+        <EntityContainerMapping StorageEntityContainer="Хранилище ModelContainer" CdmEntityContainer="Entities">
           <EntitySetMapping Name="Активности">
-            <EntityTypeMapping TypeName="МероприятияModel.Активности">
+            <EntityTypeMapping TypeName="Model.Активности">
               <MappingFragment StoreEntitySet="Активности">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Название" ColumnName="Название" />
@@ -613,7 +829,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Города">
-            <EntityTypeMapping TypeName="МероприятияModel.Города">
+            <EntityTypeMapping TypeName="Model.Города">
               <MappingFragment StoreEntitySet="Города">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Название" ColumnName="Название" />
@@ -621,7 +837,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ЖюриАктивности">
-            <EntityTypeMapping TypeName="МероприятияModel.ЖюриАктивности">
+            <EntityTypeMapping TypeName="Model.ЖюриАктивности">
               <MappingFragment StoreEntitySet="ЖюриАктивности">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="АктивностьId" ColumnName="АктивностьId" />
@@ -631,29 +847,43 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Мероприятия">
-            <EntityTypeMapping TypeName="МероприятияModel.Мероприятия">
+            <EntityTypeMapping TypeName="Model.Мероприятия">
               <MappingFragment StoreEntitySet="Мероприятия">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Название" ColumnName="Название" />
+                <ScalarProperty Name="Описание" ColumnName="Описание" />
                 <ScalarProperty Name="ДатаНачала" ColumnName="ДатаНачала" />
                 <ScalarProperty Name="ДлительностьДней" ColumnName="ДлительностьДней" />
                 <ScalarProperty Name="ГородId" ColumnName="ГородId" />
                 <ScalarProperty Name="НаправлениеId" ColumnName="НаправлениеId" />
                 <ScalarProperty Name="ПобедительId" ColumnName="ПобедительId" />
+                <ScalarProperty Name="ОрганизаторId" ColumnName="ОрганизаторId" />
                 <ScalarProperty Name="Фото" ColumnName="Фото" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Направления">
-            <EntityTypeMapping TypeName="МероприятияModel.Направления">
+            <EntityTypeMapping TypeName="Model.Направления">
               <MappingFragment StoreEntitySet="Направления">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Название" ColumnName="Название" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Оценки">
+            <EntityTypeMapping TypeName="Model.Оценки">
+              <MappingFragment StoreEntitySet="Оценки">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ЖюриАктивностиId" ColumnName="ЖюриАктивностиId" />
+                <ScalarProperty Name="УчастникАктивностиId" ColumnName="УчастникАктивностиId" />
+                <ScalarProperty Name="Оценка" ColumnName="Оценка" />
+                <ScalarProperty Name="Комментарий" ColumnName="Комментарий" />
+                <ScalarProperty Name="ДатаОценки" ColumnName="ДатаОценки" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Пол">
-            <EntityTypeMapping TypeName="МероприятияModel.Пол">
+            <EntityTypeMapping TypeName="Model.Пол">
               <MappingFragment StoreEntitySet="Пол">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Название" ColumnName="Название" />
@@ -661,7 +891,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Пользователи">
-            <EntityTypeMapping TypeName="МероприятияModel.Пользователи">
+            <EntityTypeMapping TypeName="Model.Пользователи">
               <MappingFragment StoreEntitySet="Пользователи">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="ФИО" ColumnName="ФИО" />
@@ -677,7 +907,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Роли">
-            <EntityTypeMapping TypeName="МероприятияModel.Роли">
+            <EntityTypeMapping TypeName="Model.Роли">
               <MappingFragment StoreEntitySet="Роли">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Название" ColumnName="Название" />
@@ -685,7 +915,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="РолиЖюри">
-            <EntityTypeMapping TypeName="МероприятияModel.РолиЖюри">
+            <EntityTypeMapping TypeName="Model.РолиЖюри">
               <MappingFragment StoreEntitySet="РолиЖюри">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Название" ColumnName="Название" />
@@ -693,13 +923,22 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Страны">
-            <EntityTypeMapping TypeName="МероприятияModel.Страны">
+            <EntityTypeMapping TypeName="Model.Страны">
               <MappingFragment StoreEntitySet="Страны">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="НазваниеСтраны" ColumnName="НазваниеСтраны" />
                 <ScalarProperty Name="АнглийскоеНазвание" ColumnName="АнглийскоеНазвание" />
                 <ScalarProperty Name="Код" ColumnName="Код" />
                 <ScalarProperty Name="Код2" ColumnName="Код2" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="УчастникиАктивностей">
+            <EntityTypeMapping TypeName="Model.УчастникиАктивностей">
+              <MappingFragment StoreEntitySet="УчастникиАктивностей">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ПользовательId" ColumnName="ПользовательId" />
+                <ScalarProperty Name="АктивностьId" ColumnName="АктивностьId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

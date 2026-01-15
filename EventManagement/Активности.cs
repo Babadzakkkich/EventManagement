@@ -18,6 +18,7 @@ namespace EventManagement
         public Активности()
         {
             this.ЖюриАктивности = new HashSet<ЖюриАктивности>();
+            this.УчастникиАктивностей = new HashSet<УчастникиАктивностей>();
         }
     
         public int Id { get; set; }
@@ -31,5 +32,7 @@ namespace EventManagement
         public virtual Пользователи Пользователи { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ЖюриАктивности> ЖюриАктивности { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<УчастникиАктивностей> УчастникиАктивностей { get; set; }
     }
 }

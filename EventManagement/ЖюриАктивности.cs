@@ -14,6 +14,12 @@ namespace EventManagement
     
     public partial class ЖюриАктивности
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public ЖюриАктивности()
+        {
+            this.Оценки = new HashSet<Оценки>();
+        }
+    
         public int Id { get; set; }
         public int АктивностьId { get; set; }
         public int ЖюриId { get; set; }
@@ -22,5 +28,7 @@ namespace EventManagement
         public virtual Активности Активности { get; set; }
         public virtual Пользователи Пользователи { get; set; }
         public virtual РолиЖюри РолиЖюри { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Оценки> Оценки { get; set; }
     }
 }

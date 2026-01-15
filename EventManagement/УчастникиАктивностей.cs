@@ -12,30 +12,21 @@ namespace EventManagement
     using System;
     using System.Collections.Generic;
     
-    public partial class Мероприятия
+    public partial class УчастникиАктивностей
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Мероприятия()
+        public УчастникиАктивностей()
         {
-            this.Активности = new HashSet<Активности>();
+            this.Оценки = new HashSet<Оценки>();
         }
     
         public int Id { get; set; }
-        public string Название { get; set; }
-        public string Описание { get; set; }
-        public System.DateTime ДатаНачала { get; set; }
-        public int ДлительностьДней { get; set; }
-        public int ГородId { get; set; }
-        public int НаправлениеId { get; set; }
-        public Nullable<int> ПобедительId { get; set; }
-        public int ОрганизаторId { get; set; }
-        public string Фото { get; set; }
+        public int ПользовательId { get; set; }
+        public int АктивностьId { get; set; }
     
+        public virtual Активности Активности { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Активности> Активности { get; set; }
-        public virtual Города Города { get; set; }
-        public virtual Направления Направления { get; set; }
+        public virtual ICollection<Оценки> Оценки { get; set; }
         public virtual Пользователи Пользователи { get; set; }
-        public virtual Пользователи Пользователи1 { get; set; }
     }
 }

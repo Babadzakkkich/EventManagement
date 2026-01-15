@@ -1,0 +1,92 @@
+﻿<Window x:Class="EventManagement.Windows.AddActivityWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Добавление активности" 
+        Height="450" 
+        Width="400"
+        WindowStartupLocation="CenterOwner"
+        Style="{StaticResource MainWindowStyle}"
+        ResizeMode="NoResize">
+
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Заголовок -->
+        <TextBlock Text="Добавление активности" 
+                  Style="{StaticResource HeaderTextStyle}"
+                  Grid.Row="0"/>
+
+        <!-- Форма -->
+        <StackPanel Grid.Row="1">
+            <!-- Название активности -->
+            <Label Content="Название активности:" 
+                   Style="{StaticResource PrimaryLabelStyle}"/>
+            <TextBox x:Name="TitleTextBox" 
+                    Style="{StaticResource PrimaryTextBoxStyle}"/>
+
+            <!-- День мероприятия -->
+            <Label Content="День мероприятия:" 
+                   Style="{StaticResource PrimaryLabelStyle}"
+                   Margin="0,10,0,0"/>
+            <ComboBox x:Name="DayComboBox"
+                     Style="{StaticResource PrimaryComboBoxStyle}"/>
+
+            <!-- Время начала -->
+            <Label Content="Время начала:" 
+                   Style="{StaticResource PrimaryLabelStyle}"
+                   Margin="0,10,0,0"/>
+            <ComboBox x:Name="TimeComboBox"
+                     Style="{StaticResource PrimaryComboBoxStyle}"/>
+
+            <!-- Продолжительность -->
+            <Label Content="Продолжительность:" 
+                   Style="{StaticResource PrimaryLabelStyle}"
+                   Margin="0,10,0,0"/>
+            <TextBlock Text="90 минут (фиксированно)" 
+                      Style="{StaticResource NormalTextStyle}"
+                      Margin="5"/>
+
+            <!-- Модератор -->
+            <Label Content="Модератор:" 
+                   Style="{StaticResource PrimaryLabelStyle}"
+                   Margin="0,10,0,0"/>
+            <ComboBox x:Name="ModeratorComboBox"
+                     DisplayMemberPath="ФИО"
+                     SelectedValuePath="Id"
+                     Style="{StaticResource PrimaryComboBoxStyle}"/>
+
+            <!-- Информация -->
+            <Border Style="{StaticResource EventCardStyle}" Margin="0,15,0,0">
+                <TextBlock Text="Время начала выбирается с учетом 15-минутного перерыва между активностями в рамках одного дня мероприятия."
+                          Style="{StaticResource NormalTextStyle}"
+                          TextWrapping="Wrap"
+                          FontSize="12"/>
+            </Border>
+        </StackPanel>
+
+        <!-- Кнопки -->
+        <StackPanel Grid.Row="2" 
+                   Orientation="Horizontal" 
+                   HorizontalAlignment="Right"
+                   Margin="0,20,0,0">
+            <Button x:Name="SaveButton"
+                    Content="Добавить"
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    Padding="15,8"
+                    Click="SaveButton_Click"
+                    IsDefault="True"/>
+
+            <Button x:Name="CancelButton"
+                    Content="Отмена"
+                    Style="{StaticResource SecondaryButtonStyle}"
+                    Padding="15,8"
+                    Margin="10,0,0,0"
+                    Click="CancelButton_Click"
+                    IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -67,20 +67,42 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Dialogs\SelectActivitiesDialog.xaml.cs">
+      <DependentUpon>SelectActivitiesDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Model.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Model.Context.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Model.edmx</DependentUpon>
+    </Compile>
     <Compile Include="NullToVisibilityConverter.cs" />
     <Compile Include="Pages\AuthPage.xaml.cs">
       <DependentUpon>AuthPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\EventDetailsPage.xaml.cs">
+      <DependentUpon>EventDetailsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\EventsPage.xaml.cs">
       <DependentUpon>EventsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\ProfilePage.xaml.cs">
       <DependentUpon>ProfilePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\AddActivityWindow.xaml.cs">
+      <DependentUpon>AddActivityWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\AddEditEventWindow.xaml.cs">
+      <DependentUpon>AddEditEventWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Активности.cs">
       <DependentUpon>Model.tt</DependentUpon>
@@ -95,6 +117,9 @@
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Направления.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Оценки.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Пол.cs">
@@ -112,6 +137,13 @@
     <Compile Include="Страны.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="УчастникиАктивностей.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
+    <Page Include="Dialogs\SelectActivitiesDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -128,6 +160,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\EventDetailsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\EventsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -140,18 +176,16 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Windows\AddActivityWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\AddEditEventWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Model.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Model.edmx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -259,10 +293,36 @@
     <Resource Include="Images\Avatars\foto8.jpg" />
     <Resource Include="Images\Avatars\foto9.jpg" />
     <Resource Include="Images\default-avatar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\default-event.png" />
+    <Resource Include="Images\Events\1.jpeg" />
+    <Resource Include="Images\Events\10.jpg" />
+    <Resource Include="Images\Events\11.jpg" />
+    <Resource Include="Images\Events\12.jpg" />
+    <Resource Include="Images\Events\13.jpg" />
+    <Resource Include="Images\Events\14.png" />
+    <Resource Include="Images\Events\15.jpg" />
+    <Resource Include="Images\Events\16.jpg" />
+    <Resource Include="Images\Events\17.jpg" />
+    <Resource Include="Images\Events\18.jpeg" />
+    <Resource Include="Images\Events\19.jpg" />
+    <Resource Include="Images\Events\2.jpeg" />
+    <Resource Include="Images\Events\20.jpg" />
+    <Resource Include="Images\Events\3.jpeg" />
+    <Resource Include="Images\Events\4.jpeg" />
+    <Resource Include="Images\Events\5.png" />
+    <Resource Include="Images\Events\6.jpg" />
+    <Resource Include="Images\Events\7.jpg" />
+    <Resource Include="Images\Events\8.jpeg" />
+    <Resource Include="Images\Events\9.jpg" />
     <Content Include="Model.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Model.Context.cs</LastGenOutput>
       <DependentUpon>Model.edmx</DependentUpon>
+      <LastGenOutput>Model.Context.cs</LastGenOutput>
     </Content>
     <Content Include="Model.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -270,9 +330,7 @@
       <LastGenOutput>Model.cs</LastGenOutput>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
