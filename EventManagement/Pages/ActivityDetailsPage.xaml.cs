@@ -14,6 +14,7 @@ namespace EventManagement.Pages
         private Активности _activity;
         private List<ЖюриАктивности> _jury;
         private List<УчастникиАктивностей> _participants;
+        private bool _isJuryForThisActivity = false;
 
         public ActivityDetailsPage(MainWindow mainWindow, Активности активность)
         {
@@ -66,6 +67,12 @@ namespace EventManagement.Pages
 
                     NoJuryText.Visibility = _jury.Any() ?
                         Visibility.Collapsed : Visibility.Visible;
+
+                    // Проверяем, является ли текущий пользователь жюри этой активности
+                    if (_mainWindow.CurrentUser != null)
+                    {
+                        _isJuryForThisActivity = _jury.Any(j => j.ЖюриId == _mainWindow.CurrentUser.Id);
+                    }
                 }
             }
             catch (Exception ex)
@@ -82,6 +89,7 @@ namespace EventManagement.Pages
                 {
                     _participants = context.УчастникиАктивностей
                         .Include(p => p.Пользователи)
+                        .Include(p => p.Оценки)
                         .Where(p => p.АктивностьId == _activity.Id)
                         .ToList();
 
@@ -112,15 +120,9 @@ namespace EventManagement.Pages
                 DeleteActivityButton.Visibility = Visibility.Visible;
                 AddJuryButton.Visibility = Visibility.Visible;
             }
-            else if (userRole == "Жюри")
+            else if (userRole == "Жюри" && _isJuryForThisActivity)
             {
-                // Проверяем, является ли пользователь жюри этой активности
-                bool isJuryForThisActivity = _jury.Any(j => j.ЖюриId == _mainWindow.CurrentUser.Id);
-                if (isJuryForThisActivity)
-                {
-                    // Показываем функционал для выставления оценок
-                    // (это можно реализовать отдельно)
-                }
+                RateParticipantsButton.Visibility = Visibility.Visible;
             }
         }
 
@@ -135,6 +137,26 @@ namespace EventManagement.Pages
                 LoadActivityDetails();
                 LoadJury();
                 LoadParticipants();
+                CheckUserPermissions();
+            }
+        }
+
+        private void RateParticipantsButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!_isJuryForThisActivity)
+            {
+                _mainWindow.ShowError("Вы не являетесь жюри этой активности");
+                return;
+            }
+
+            var rateWindow = new RateParticipantsWindow(_mainWindow, _activity);
+            rateWindow.Owner = Window.GetWindow(this);
+
+            if (rateWindow.ShowDialog() == true)
+            {
+                // Обновляем данные об участниках и оценках
+                LoadParticipants();
+                _mainWindow.ShowMessage("Оценки успешно сохранены");
             }
         }
 
@@ -204,7 +226,6 @@ namespace EventManagement.Pages
 
         private void AddJuryButton_Click(object sender, RoutedEventArgs e)
         {
-            // Открываем окно для добавления жюри
             var addJuryWindow = new AddJuryToActivityWindow(_mainWindow, _activity);
             addJuryWindow.Owner = Window.GetWindow(this);
 
@@ -212,6 +233,7 @@ namespace EventManagement.Pages
             {
                 // Обновляем список жюри
                 LoadJury();
+                CheckUserPermissions(); // Обновляем кнопки после добавления жюри
             }
         }
 
@@ -238,6 +260,7 @@ namespace EventManagement.Pages
 
                                 // Обновляем список
                                 LoadJury();
+                                CheckUserPermissions(); // Обновляем кнопки после удаления жюри
                                 _mainWindow.ShowMessage("Член жюри успешно удален");
                             }
                         }

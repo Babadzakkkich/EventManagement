@@ -29,7 +29,12 @@
                                     Style="{StaticResource PrimaryButtonStyle}"
                                     Click="EditActivityButton_Click"
                                     Visibility="Collapsed"/>
-
+                            <Button x:Name="RateParticipantsButton"
+                                    Content="Оценить участников"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Margin="10,0,0,0"
+                                    Click="RateParticipantsButton_Click"
+                                    Visibility="Collapsed"/>
                             <Button x:Name="DeleteActivityButton"
                                     Content="Удалить"
                                     Style="{StaticResource SecondaryButtonStyle}"

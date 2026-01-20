@@ -7,7 +7,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <local:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
-
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <ResourceDictionary.MergedDictionaries>
                 <!-- Замените на путь к вашему файлу стилей -->
                 <ResourceDictionary Source="Styles.xaml"/>

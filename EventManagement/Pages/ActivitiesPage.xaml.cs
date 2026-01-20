@@ -265,6 +265,31 @@ namespace EventManagement.Pages
                 var активность = _allActivities.FirstOrDefault(a => a.Id == activityId);
                 if (активность != null)
                 {
+                    // Проверяем, является ли пользователь жюри этой активности
+                    if (_mainWindow.CurrentUser != null &&
+                        _mainWindow.CurrentUser.Роли?.Название == "Жюри")
+                    {
+                        var isJury = активность.ЖюриАктивности
+                            .Any(j => j.ЖюриId == _mainWindow.CurrentUser.Id);
+
+                        if (isJury)
+                        {
+                            // Предлагаем сразу перейти к оценке участников
+                            var result = MessageBox.Show("Вы являетесь жюри этой активности. Хотите перейти к оценке участников?",
+                                                       "Быстрый доступ",
+                                                       MessageBoxButton.YesNo,
+                                                       MessageBoxImage.Question);
+
+                            if (result == MessageBoxResult.Yes)
+                            {
+                                var rateWindow = new RateParticipantsWindow(_mainWindow, активность);
+                                rateWindow.Owner = Window.GetWindow(this);
+                                rateWindow.ShowDialog();
+                                return;
+                            }
+                        }
+                    }
+
                     _mainWindow.MainFrame.Navigate(new ActivityDetailsPage(_mainWindow, активность));
                 }
             }

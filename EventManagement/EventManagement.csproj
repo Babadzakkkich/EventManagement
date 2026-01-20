@@ -113,6 +113,9 @@
     <Compile Include="Windows\AddJuryToActivityWindow.xaml.cs">
       <DependentUpon>AddJuryToActivityWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\RateParticipantsWindow.xaml.cs">
+      <DependentUpon>RateParticipantsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Активности.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -202,6 +205,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\AddJuryToActivityWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\RateParticipantsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
