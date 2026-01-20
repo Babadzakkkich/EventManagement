@@ -113,6 +113,9 @@
     <Compile Include="Windows\AddJuryToActivityWindow.xaml.cs">
       <DependentUpon>AddJuryToActivityWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\CalculateWinnerWindow.xaml.cs">
+      <DependentUpon>CalculateWinnerWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\RateParticipantsWindow.xaml.cs">
       <DependentUpon>RateParticipantsWindow.xaml</DependentUpon>
     </Compile>
@@ -205,6 +208,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\AddJuryToActivityWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\CalculateWinnerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

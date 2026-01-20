@@ -31,6 +31,13 @@
                                     Click="EditEventButton_Click"
                                     Visibility="Collapsed"/>
 
+                            <Button x:Name="CalculateWinnerButton"
+                                    Content="Подсчитать победителя"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Margin="10,0,0,0"
+                                    Click="CalculateWinnerButton_Click"
+                                    Visibility="Collapsed"/>
+
                             <Button x:Name="DeleteEventButton"
                                     Content="Удалить"
                                     Style="{StaticResource SecondaryButtonStyle}"
@@ -93,6 +100,10 @@
                                               Style="{StaticResource NormalTextStyle}"
                                               FontWeight="Bold"
                                               Margin="0,5,0,0"/>
+                                    <TextBlock Text="Победитель:" 
+                                              Style="{StaticResource NormalTextStyle}"
+                                              FontWeight="Bold"
+                                              Margin="0,5,0,0"/>
                                 </StackPanel>
 
                                 <!-- Правый столбец - значения полей -->
@@ -109,6 +120,9 @@
                                               Style="{StaticResource NormalTextStyle}"
                                               Margin="0,5,0,0"/>
                                     <TextBlock Text="{Binding Пользователи.ФИО}"
+                                              Style="{StaticResource NormalTextStyle}"
+                                              Margin="0,5,0,0"/>
+                                    <TextBlock Text="{Binding Пользователи1.ФИО, FallbackValue='Не определен'}"
                                               Style="{StaticResource NormalTextStyle}"
                                               Margin="0,5,0,0"/>
                                 </StackPanel>

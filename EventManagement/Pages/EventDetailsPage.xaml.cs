@@ -41,6 +41,7 @@ namespace EventManagement.Pages
                         .Include(e => e.Города)
                         .Include(e => e.Направления)
                         .Include(e => e.Пользователи) // Организатор
+                        .Include(e => e.Пользователи1) // Победитель
                         .FirstOrDefault(e => e.Id == _event.Id);
 
                     DataContext = _event;
@@ -89,6 +90,7 @@ namespace EventManagement.Pages
             if (userRole == "Организатор" && isOrganizer)
             {
                 EditEventButton.Visibility = Visibility.Visible;
+                CalculateWinnerButton.Visibility = Visibility.Visible;
                 DeleteEventButton.Visibility = Visibility.Visible;
                 AddActivityButton.Visibility = Visibility.Visible;
 
@@ -217,6 +219,11 @@ namespace EventManagement.Pages
                 LoadEventDetails();
                 LoadEventImage();
             }
+        }
+
+        private void CalculateWinnerButton_Click(object sender, RoutedEventArgs e)
+        {
+            CalculateWinner();
         }
 
         private void JoinEventButton_Click(object sender, RoutedEventArgs e)
@@ -363,6 +370,98 @@ namespace EventManagement.Pages
                     _mainWindow.ShowError($"Ошибка при удалении: {ex.Message}");
                 }
             }
+        }
+
+        private void CalculateWinner()
+        {
+            try
+            {
+                using (var context = new Entities())
+                {
+                    // Проверяем, есть ли активности в мероприятии
+                    if (!_activities.Any())
+                    {
+                        _mainWindow.ShowError("В мероприятии нет активностей для подсчета победителя");
+                        return;
+                    }
+
+                    // Получаем всех участников мероприятия со всеми их оценками
+                    var participantsWithScores = new Dictionary<int, ParticipantScore>();
+
+                    foreach (var activity in _activities)
+                    {
+                        // Получаем участников этой активности
+                        var activityParticipants = context.УчастникиАктивностей
+                            .Include(up => up.Оценки)
+                            .Where(up => up.АктивностьId == activity.Id)
+                            .ToList();
+
+                        foreach (var participant in activityParticipants)
+                        {
+                            if (!participantsWithScores.ContainsKey(participant.ПользовательId))
+                            {
+                                participantsWithScores[participant.ПользовательId] = new ParticipantScore
+                                {
+                                    UserId = participant.ПользовательId,
+                                    UserName = participant.Пользователи?.ФИО ?? "Неизвестный участник"
+                                };
+                            }
+
+                            // Суммируем все оценки участника в этой активности
+                            var activityScore = participant.Оценки.Sum(o => o.Оценка);
+                            participantsWithScores[participant.ПользовательId].TotalScore += activityScore;
+                            participantsWithScores[participant.ПользовательId].ActivitiesCount++;
+                            participantsWithScores[participant.ПользовательId].EvaluationsCount += participant.Оценки.Count;
+                        }
+                    }
+
+                    if (!participantsWithScores.Any())
+                    {
+                        _mainWindow.ShowError("В мероприятии нет участников с оценками");
+                        return;
+                    }
+
+                    // Вычисляем средний балл для каждого участника
+                    foreach (var participant in participantsWithScores.Values)
+                    {
+                        if (participant.EvaluationsCount > 0)
+                        {
+                            participant.AverageScore = (double)participant.TotalScore / participant.EvaluationsCount;
+                        }
+                    }
+
+                    // Сортируем участников по среднему баллу (по убыванию)
+                    var sortedParticipants = participantsWithScores.Values
+                        .OrderByDescending(p => p.AverageScore)
+                        .ThenByDescending(p => p.TotalScore)
+                        .ToList();
+
+                    // Создаем окно для отображения результатов
+                    var resultsWindow = new CalculateWinnerWindow(sortedParticipants, _event);
+                    resultsWindow.Owner = Window.GetWindow(this);
+
+                    if (resultsWindow.ShowDialog() == true)
+                    {
+                        // Если победитель выбран, обновляем данные
+                        LoadEventDetails();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _mainWindow.ShowError($"Ошибка при подсчете победителя: {ex.Message}");
+            }
+        }
+
+        // Вспомогательный класс для хранения результатов участников
+        public class ParticipantScore
+        {
+            public int UserId { get; set; }
+            public string UserName { get; set; }
+            public int TotalScore { get; set; }
+            public int ActivitiesCount { get; set; }
+            public int EvaluationsCount { get; set; }
+            public double AverageScore { get; set; }
         }
     }
 }
