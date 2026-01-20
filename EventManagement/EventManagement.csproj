@@ -86,6 +86,12 @@
       <DependentUpon>Model.edmx</DependentUpon>
     </Compile>
     <Compile Include="NullToVisibilityConverter.cs" />
+    <Compile Include="Pages\ActivitiesPage.xaml.cs">
+      <DependentUpon>ActivitiesPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ActivityDetailsPage.xaml.cs">
+      <DependentUpon>ActivityDetailsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\AuthPage.xaml.cs">
       <DependentUpon>AuthPage.xaml</DependentUpon>
     </Compile>
@@ -98,11 +104,14 @@
     <Compile Include="Pages\ProfilePage.xaml.cs">
       <DependentUpon>ProfilePage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\AddActivityWindow.xaml.cs">
-      <DependentUpon>AddActivityWindow.xaml</DependentUpon>
+    <Compile Include="Windows\AddEditActivityWindow.xaml.cs">
+      <DependentUpon>AddEditActivityWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\AddEditEventWindow.xaml.cs">
       <DependentUpon>AddEditEventWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\AddJuryToActivityWindow.xaml.cs">
+      <DependentUpon>AddJuryToActivityWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Активности.cs">
       <DependentUpon>Model.tt</DependentUpon>
@@ -156,6 +165,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Pages\ActivitiesPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\ActivityDetailsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\AuthPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -176,11 +193,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\AddActivityWindow.xaml">
+    <Page Include="Windows\AddEditActivityWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\AddEditEventWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\AddJuryToActivityWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -298,37 +319,37 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\default-event.png" />
-    <Resource Include="Images\Events\1.jpeg" />
-    <Resource Include="Images\Events\10.jpg" />
-    <Resource Include="Images\Events\11.jpg" />
-    <Resource Include="Images\Events\12.jpg" />
-    <Resource Include="Images\Events\13.jpg" />
-    <Resource Include="Images\Events\14.png" />
-    <Resource Include="Images\Events\15.jpg" />
-    <Resource Include="Images\Events\16.jpg" />
-    <Resource Include="Images\Events\17.jpg" />
-    <Resource Include="Images\Events\18.jpeg" />
-    <Resource Include="Images\Events\19.jpg" />
-    <Resource Include="Images\Events\2.jpeg" />
-    <Resource Include="Images\Events\20.jpg" />
-    <Resource Include="Images\Events\3.jpeg" />
-    <Resource Include="Images\Events\4.jpeg" />
-    <Resource Include="Images\Events\5.png" />
-    <Resource Include="Images\Events\6.jpg" />
-    <Resource Include="Images\Events\7.jpg" />
-    <Resource Include="Images\Events\8.jpeg" />
-    <Resource Include="Images\Events\9.jpg" />
     <Content Include="Model.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>Model.edmx</DependentUpon>
       <LastGenOutput>Model.Context.cs</LastGenOutput>
+      <DependentUpon>Model.edmx</DependentUpon>
     </Content>
     <Content Include="Model.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>Model.edmx</DependentUpon>
       <LastGenOutput>Model.cs</LastGenOutput>
     </Content>
+    <Resource Include="Images\default-event.png" />
+    <Content Include="Images\Events\1.jpg" />
+    <Resource Include="Images\Events\10.jpg" />
+    <Resource Include="Images\Events\11.jpg" />
+    <Resource Include="Images\Events\12.jpg" />
+    <Resource Include="Images\Events\13.jpg" />
+    <Content Include="Images\Events\14.jpg" />
+    <Resource Include="Images\Events\15.jpg" />
+    <Resource Include="Images\Events\16.jpg" />
+    <Resource Include="Images\Events\17.jpg" />
+    <Content Include="Images\Events\18.jpg" />
+    <Resource Include="Images\Events\19.jpg" />
+    <Content Include="Images\Events\2.jpg" />
+    <Resource Include="Images\Events\20.jpg" />
+    <Content Include="Images\Events\3.jpg" />
+    <Content Include="Images\Events\4.jpg" />
+    <Content Include="Images\Events\5.jpg" />
+    <Resource Include="Images\Events\6.jpg" />
+    <Resource Include="Images\Events\7.jpg" />
+    <Content Include="Images\Events\8.jpg" />
+    <Resource Include="Images\Events\9.jpg" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

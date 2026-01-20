@@ -25,14 +25,27 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Заголовок приложения -->
-                <TextBlock Grid.Column="0"
-                          Text="EventManager"
-                          Foreground="White"
-                          FontFamily="{StaticResource MainFontFamily}"
-                          FontSize="24"
-                          FontWeight="Bold"
-                          VerticalAlignment="Center"/>
+                <!-- Навигация -->
+                <StackPanel Grid.Column="0" 
+                           Orientation="Horizontal" 
+                           VerticalAlignment="Center">
+                    <Button x:Name="EventsNavButton"
+                            Content="Мероприятия"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Background="White"
+                            Foreground="{StaticResource AccentBrush}"
+                            Padding="10,5"
+                            Click="EventsNavButton_Click"/>
+
+                    <Button x:Name="ActivitiesNavButton"
+                            Content="Активности"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Background="White"
+                            Foreground="{StaticResource AccentBrush}"
+                            Padding="10,5"
+                            Margin="10,0,0,0"
+                            Click="ActivitiesNavButton_Click"/>
+                </StackPanel>
 
                 <!-- Кнопка "Назад" -->
                 <Button Grid.Column="1" 
@@ -79,14 +92,10 @@
                         <TextBlock x:Name="UsernameTextBlock" 
                                   FontWeight="Bold"
                                   FontSize="14"
-                                  Foreground="White"
-                                  TextTrimming="CharacterEllipsis"
-                                  MaxWidth="200"/>
+                                  Foreground="White"/>
                         <TextBlock x:Name="RoleTextBlock" 
                                   FontSize="12"
-                                  Foreground="#E0E0E0"
-                                  TextTrimming="CharacterEllipsis"
-                                  MaxWidth="200"/>
+                                  Foreground="#E0E0E0"/>
                     </StackPanel>
 
                     <!-- Кнопка "Выйти" -->

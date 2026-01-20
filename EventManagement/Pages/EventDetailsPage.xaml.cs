@@ -83,10 +83,13 @@ namespace EventManagement.Pages
 
             var userRole = _mainWindow.CurrentUser.Роли?.Название;
 
-            // Кнопка редактирования мероприятия для организатора
-            if (userRole == "Организатор")
+            // Проверяем, является ли пользователь организатором этого мероприятия
+            bool isOrganizer = _event.ОрганизаторId == _mainWindow.CurrentUser.Id;
+
+            if (userRole == "Организатор" && isOrganizer)
             {
                 EditEventButton.Visibility = Visibility.Visible;
+                DeleteEventButton.Visibility = Visibility.Visible;
                 AddActivityButton.Visibility = Visibility.Visible;
 
                 // Показываем кнопки удаления для активностей
@@ -239,7 +242,7 @@ namespace EventManagement.Pages
 
         private void AddActivityButton_Click(object sender, RoutedEventArgs e)
         {
-            var addActivityWindow = new AddActivityWindow(_mainWindow, _event);
+            var addActivityWindow = new AddEditActivityWindow(_mainWindow, _event);
             addActivityWindow.Owner = Window.GetWindow(this);
 
             if (addActivityWindow.ShowDialog() == true)
@@ -280,6 +283,84 @@ namespace EventManagement.Pages
                     {
                         _mainWindow.ShowError($"Ошибка при удалении: {ex.Message}");
                     }
+                }
+            }
+        }
+
+        private void DeleteEventButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Проверяем наличие активностей
+            if (_activities.Any())
+            {
+                _mainWindow.ShowError("Нельзя удалить мероприятие, так как для него существуют активности. " +
+                                    "Сначала удалите все активности.");
+                return;
+            }
+
+            var result = MessageBox.Show($"Вы уверены, что хотите удалить мероприятие \"{_event.Название}\"?\n\n" +
+                                       "Это действие нельзя отменить.",
+                                       "Подтверждение удаления",
+                                       MessageBoxButton.YesNo,
+                                       MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    using (var context = new Entities())
+                    {
+                        // Загружаем мероприятие с зависимостями для проверки
+                        var eventToDelete = context.Мероприятия
+                            .Include(m => m.Активности)
+                            .FirstOrDefault(m => m.Id == _event.Id);
+
+                        if (eventToDelete == null)
+                        {
+                            _mainWindow.ShowError("Мероприятие не найдено");
+                            return;
+                        }
+
+                        // Дополнительная проверка (на всякий случай)
+                        if (eventToDelete.Активности.Any())
+                        {
+                            _mainWindow.ShowError("Нельзя удалить мероприятие, так как для него существуют активности");
+                            return;
+                        }
+
+                        // Удаляем мероприятие
+                        context.Мероприятия.Remove(eventToDelete);
+                        context.SaveChanges();
+
+                        _mainWindow.ShowMessage($"Мероприятие \"{_event.Название}\" успешно удалено");
+
+                        // Возвращаемся на страницу мероприятий
+                        if (_mainWindow.MainFrame.CanGoBack)
+                        {
+                            _mainWindow.MainFrame.GoBack();
+                        }
+                        else
+                        {
+                            _mainWindow.MainFrame.Navigate(new EventsPage(_mainWindow));
+                        }
+                    }
+                }
+                catch (System.Data.Entity.Infrastructure.DbUpdateException dbEx)
+                {
+                    // Проверяем наличие внешних ключей
+                    var innerException = dbEx.InnerException?.InnerException;
+                    if (innerException != null && innerException.Message.Contains("FOREIGN KEY constraint"))
+                    {
+                        _mainWindow.ShowError("Нельзя удалить мероприятие, так как на него ссылаются другие записи " +
+                                            "(например, участники или жюри активностей).");
+                    }
+                    else
+                    {
+                        _mainWindow.ShowError($"Ошибка базы данных при удалении: {dbEx.Message}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _mainWindow.ShowError($"Ошибка при удалении: {ex.Message}");
                 }
             }
         }

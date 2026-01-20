@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace EventManagement.Pages
 {
@@ -78,21 +79,33 @@ namespace EventManagement.Pages
 
         private void LoadEventImages()
         {
-            // Загружаем изображения для всех карточек мероприятий
-            foreach (var item in EventsItemsControl.Items)
+            // Ждем обновления UI перед загрузкой изображений
+            Dispatcher.BeginInvoke(new Action(() =>
             {
-                if (EventsItemsControl.ItemContainerGenerator.ContainerFromItem(item) is ContentPresenter presenter)
+                try
                 {
-                    if (VisualTreeHelper.GetChild(presenter, 0) is Border border)
+                    // Загружаем изображения для всех карточек мероприятий
+                    foreach (var item in EventsItemsControl.Items)
                     {
-                        var image = FindVisualChild<Image>(border, "EventImage");
+                        var container = EventsItemsControl.ItemContainerGenerator.ContainerFromItem(item);
+
+                        // Если контейнер еще не создан, пропускаем
+                        if (container == null)
+                            continue;
+
+                        // Ищем Image в контейнере
+                        var image = FindVisualChild<Image>(container);
                         if (image != null && item is Мероприятия мероприятие)
                         {
                             LoadImageForEvent(image, мероприятие);
                         }
                     }
                 }
-            }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Ошибка загрузки изображений: {ex.Message}");
+                }
+            }), DispatcherPriority.Render);
         }
 
         private void LoadImageForEvent(Image imageControl, Мероприятия мероприятие)
@@ -139,23 +152,31 @@ namespace EventManagement.Pages
             }
         }
 
-        private T FindVisualChild<T>(DependencyObject parent, string childName = null) where T : DependencyObject
+        private T FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
         {
+            if (parent == null) return null;
+
+            // Пытаемся найти элемент по имени "EventImage"
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
             {
                 var child = VisualTreeHelper.GetChild(parent, i);
 
-                if (child is T typedChild)
+                if (child is T result)
                 {
-                    if (string.IsNullOrEmpty(childName) ||
-                        (child is FrameworkElement frameworkElement && frameworkElement.Name == childName))
+                    // Проверяем имя элемента, если это Image
+                    if (typeof(T) == typeof(Image))
                     {
-                        return typedChild;
+                        if (child is FrameworkElement element && element.Name == "EventImage")
+                            return result;
+                    }
+                    else
+                    {
+                        return result;
                     }
                 }
 
-                var result = FindVisualChild<T>(child, childName);
-                if (result != null) return result;
+                var childResult = FindVisualChild<T>(child);
+                if (childResult != null) return childResult;
             }
 
             return null;
@@ -191,7 +212,12 @@ namespace EventManagement.Pages
             UpdateEventsList(filteredEvents.ToList());
 
             // Перезагружаем изображения для отфильтрованных мероприятий
-            Dispatcher.BeginInvoke(new Action(() => LoadEventImages()));
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                // Принудительно обновляем контейнеры
+                EventsItemsControl.UpdateLayout();
+                LoadEventImages();
+            }), DispatcherPriority.Render);
         }
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
@@ -221,7 +247,13 @@ namespace EventManagement.Pages
             DirectionComboBox.SelectedIndex = -1;
             DateFilterPicker.SelectedDate = null;
             UpdateEventsList(_allEvents);
-            Dispatcher.BeginInvoke(new Action(() => LoadEventImages()));
+
+            // Используем задержку для обновления изображений
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                EventsItemsControl.UpdateLayout();
+                LoadEventImages();
+            }), DispatcherPriority.Render);
         }
 
         private void AddEventButton_Click(object sender, RoutedEventArgs e)
@@ -247,6 +279,12 @@ namespace EventManagement.Pages
                     _mainWindow.MainFrame.Navigate(new EventDetailsPage(_mainWindow, мероприятие));
                 }
             }
+        }
+
+        // Альтернативный подход: загрузка изображений при генерации контейнера
+        private void EventsItemsControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            LoadEventImages();
         }
     }
 }

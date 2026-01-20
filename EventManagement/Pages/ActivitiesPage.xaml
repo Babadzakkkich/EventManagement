@@ -1,0 +1,251 @@
+﻿<Page x:Class="EventManagement.Pages.ActivitiesPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Активности"
+      Loaded="Page_Loaded">
+
+    <Grid Background="{StaticResource PrimaryBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Панель поиска, фильтров и сортировки -->
+        <Border Grid.Row="0" 
+                Style="{StaticResource EventCardStyle}"
+                Margin="10"
+                Padding="15">
+            <StackPanel>
+                <TextBlock Text="Поиск, фильтрация и сортировка" 
+                          Style="{StaticResource SubHeaderTextStyle}"
+                          Margin="0,0,0,10"/>
+
+                <!-- Первая строка: Поиск и сортировка -->
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Строка поиска -->
+                    <TextBox x:Name="SearchTextBox" 
+                            Style="{StaticResource PrimaryTextBoxStyle}"
+                            Margin="0,0,10,0"
+                            TextChanged="SearchTextBox_TextChanged"
+                            Padding="10"/>
+
+                    <!-- Сортировка по времени -->
+                    <StackPanel Grid.Column="1" 
+                               Orientation="Horizontal"
+                               VerticalAlignment="Center"
+                               Margin="0,0,10,0">
+                        <TextBlock Text="Сортировка:"
+                                  Style="{StaticResource NormalTextStyle}"
+                                  VerticalAlignment="Center"
+                                  Margin="0,0,5,0"/>
+                        <ComboBox x:Name="SortComboBox"
+                                 Style="{StaticResource PrimaryComboBoxStyle}"
+                                 Width="150"
+                                 SelectionChanged="SortComboBox_SelectionChanged">
+                            <ComboBoxItem Content="По умолчанию"/>
+                            <ComboBoxItem Content="Время ↑ (возрастание)"/>
+                            <ComboBoxItem Content="Время ↓ (убывание)"/>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!-- Кнопка сброса -->
+                    <Button x:Name="ResetFiltersButton"
+                            Grid.Column="2"
+                            Content="Сбросить"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Padding="10,5"
+                            Click="ResetFiltersButton_Click"/>
+                </Grid>
+
+                <!-- Вторая строка: Фильтры -->
+                <StackPanel Orientation="Horizontal">
+                    <!-- Фильтр по мероприятию -->
+                    <StackPanel Margin="0,0,20,0">
+                        <TextBlock Text="Мероприятие:" 
+                                  Style="{StaticResource NormalTextStyle}"
+                                  Margin="0,0,0,5"/>
+                        <ComboBox x:Name="EventFilterComboBox"
+                                 Style="{StaticResource PrimaryComboBoxStyle}"
+                                 Width="250"
+                                 DisplayMemberPath="Название"
+                                 SelectionChanged="EventFilterComboBox_SelectionChanged"/>
+                    </StackPanel>
+
+                    <!-- Фильтр по дню мероприятия -->
+                    <StackPanel>
+                        <TextBlock Text="День мероприятия:" 
+                                  Style="{StaticResource NormalTextStyle}"
+                                  Margin="0,0,0,5"/>
+                        <ComboBox x:Name="DayFilterComboBox"
+                                 Style="{StaticResource PrimaryComboBoxStyle}"
+                                 Width="120"
+                                 SelectionChanged="DayFilterComboBox_SelectionChanged"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Панель действий для организатора -->
+        <Border Grid.Row="1" 
+                Style="{StaticResource EventCardStyle}"
+                Margin="10,0,10,10"
+                Padding="10"
+                x:Name="OrganizerPanel"
+                Visibility="Collapsed">
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="AddActivityButton"
+                        Content="+ Добавить активность"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        Padding="15,8"
+                        Click="AddActivityButton_Click"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Список активностей -->
+        <ScrollViewer Grid.Row="2" 
+                     VerticalScrollBarVisibility="Auto"
+                     Margin="10">
+            <ItemsControl x:Name="ActivitiesItemsControl">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" 
+                                  HorizontalAlignment="Center"
+                                  Margin="0,10,0,0"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Style="{StaticResource EventCardStyle}"
+                                Margin="10"
+                                Width="350"
+                                Cursor="Hand"
+                                MouseDown="ActivityCard_MouseDown"
+                                Tag="{Binding Id}">
+
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Заголовок активности -->
+                                <TextBlock Grid.Row="0"
+                                          Text="{Binding Название}"
+                                          Style="{StaticResource HeaderTextStyle}"
+                                          TextWrapping="Wrap"
+                                          Margin="0,0,0,10"
+                                          TextAlignment="Center"
+                                          FontSize="16"/>
+
+                                <!-- Информация о мероприятии -->
+                                <Border Grid.Row="1"
+                                        Style="{StaticResource EventCardStyle}"
+                                        Background="{StaticResource SecondaryBackgroundBrush}"
+                                        Opacity="0.7"
+                                        Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock Text="Мероприятие:"
+                                                  Style="{StaticResource NormalTextStyle}"
+                                                  FontWeight="Bold"
+                                                  FontSize="12"/>
+                                        <TextBlock Text="{Binding Мероприятия.Название}"
+                                                  Style="{StaticResource NormalTextStyle}"
+                                                  TextWrapping="Wrap"
+                                                  FontSize="12"
+                                                  Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Детали активности -->
+                                <StackPanel Grid.Row="2">
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                        <TextBlock Text="📅 День: "
+                                                  Style="{StaticResource NormalTextStyle}"
+                                                  FontSize="13"/>
+                                        <TextBlock Text="{Binding День, StringFormat='{}{0}'}"
+                                                  Style="{StaticResource NormalTextStyle}"
+                                                  FontSize="13"/>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                        <TextBlock Text="⏰ Время: "
+                                                  Style="{StaticResource NormalTextStyle}"
+                                                  FontSize="13"/>
+                                        <TextBlock Text="{Binding ВремяНачала, StringFormat='hh\\:mm'}"
+                                                  Style="{StaticResource NormalTextStyle}"
+                                                  FontSize="13"/>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="👤 Модератор: "
+                                                  Style="{StaticResource NormalTextStyle}"
+                                                  FontSize="13"/>
+                                        <TextBlock Text="{Binding Пользователи.ФИО}"
+                                                  Style="{StaticResource NormalTextStyle}"
+                                                  FontSize="13"
+                                                  TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <!-- Статистика -->
+                                <Border Grid.Row="3"
+                                        Style="{StaticResource EventCardStyle}"
+                                        Background="{StaticResource SecondaryBackgroundBrush}"
+                                        Opacity="0.7"
+                                        Margin="0,10,0,0">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Жюри:"
+                                                      Style="{StaticResource NormalTextStyle}"
+                                                      FontWeight="Bold"
+                                                      FontSize="11"/>
+                                            <TextBlock x:Name="JuryCountText"
+                                                      Text="0"
+                                                      Style="{StaticResource NormalTextStyle}"
+                                                      FontSize="11"/>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="Участники:"
+                                                      Style="{StaticResource NormalTextStyle}"
+                                                      FontWeight="Bold"
+                                                      FontSize="11"/>
+                                            <TextBlock x:Name="ParticipantsCountText"
+                                                      Text="0"
+                                                      Style="{StaticResource NormalTextStyle}"
+                                                      FontSize="11"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <!-- Сообщение об отсутствии активностей -->
+        <TextBlock x:Name="NoActivitiesText"
+                  Grid.Row="2"
+                  Text="Активности не найдены"
+                  Style="{StaticResource HintTextStyle}"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Visibility="Collapsed"/>
+    </Grid>
+</Page>

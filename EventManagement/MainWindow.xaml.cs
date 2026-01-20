@@ -24,6 +24,7 @@ namespace EventManagement
             HideUserInfo();
             CurrentUser = null;
             UpdateBackButton();
+            UpdateNavButtons();
         }
 
         public void LoginUser(Пользователи user)
@@ -112,6 +113,7 @@ namespace EventManagement
         {
             MainFrame.Navigate(new EventsPage(this));
             UpdateBackButton();
+            UpdateNavButtons();
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
@@ -120,12 +122,14 @@ namespace EventManagement
             {
                 MainFrame.GoBack();
                 UpdateBackButton();
+                UpdateNavButtons();
             }
         }
 
         private void MainFrame_Navigated(object sender, NavigationEventArgs e)
         {
             UpdateBackButton();
+            UpdateNavButtons();
         }
 
         private void UpdateBackButton()
@@ -134,6 +138,30 @@ namespace EventManagement
                                   !(MainFrame.Content is AuthPage)
                                   ? Visibility.Visible
                                   : Visibility.Collapsed;
+        }
+
+        private void UpdateNavButtons()
+        {
+            if (CurrentUser != null)
+            {
+                EventsNavButton.Visibility = Visibility.Visible;
+                ActivitiesNavButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                EventsNavButton.Visibility = Visibility.Visible;
+                ActivitiesNavButton.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void EventsNavButton_Click(object sender, RoutedEventArgs e)
+        {
+            MainFrame.Navigate(new EventsPage(this));
+        }
+
+        private void ActivitiesNavButton_Click(object sender, RoutedEventArgs e)
+        {
+            MainFrame.Navigate(new ActivitiesPage(this));
         }
 
         private void AvatarButton_Click(object sender, RoutedEventArgs e)

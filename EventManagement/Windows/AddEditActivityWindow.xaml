@@ -1,0 +1,136 @@
+﻿<Window x:Class="EventManagement.Windows.AddEditActivityWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{Binding WindowTitle}" 
+        Height="720" 
+        Width="500"
+        WindowStartupLocation="CenterOwner"
+        Style="{StaticResource MainWindowStyle}"
+        ResizeMode="NoResize"
+        Loaded="Window_Loaded">
+
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Заголовок -->
+        <TextBlock Text="{Binding WindowTitle}" 
+                  Style="{StaticResource HeaderTextStyle}"
+                  Grid.Row="0"/>
+
+        <!-- Форма -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <!-- Мероприятие -->
+                <Label Content="Мероприятие:" 
+                       Style="{StaticResource PrimaryLabelStyle}"/>
+                <ComboBox x:Name="EventComboBox"
+                         DisplayMemberPath="Название"
+                         SelectedValuePath="Id"
+                         SelectedValue="{Binding CurrentActivity.МероприятиеId}"
+                         IsEnabled="{Binding CanChangeEvent}"
+                         Style="{StaticResource PrimaryComboBoxStyle}"
+                         SelectionChanged="EventComboBox_SelectionChanged"/>
+
+                <!-- Название активности -->
+                <Label Content="Название активности:" 
+                       Style="{StaticResource PrimaryLabelStyle}"
+                       Margin="0,10,0,0"/>
+                <TextBox x:Name="TitleTextBox" 
+                        Text="{Binding CurrentActivity.Название, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource PrimaryTextBoxStyle}"/>
+
+                <!-- День мероприятия -->
+                <Label Content="День мероприятия:" 
+                       Style="{StaticResource PrimaryLabelStyle}"
+                       Margin="0,10,0,0"/>
+                <ComboBox x:Name="DayComboBox"
+                         SelectedValue="{Binding CurrentActivity.День}"
+                         Style="{StaticResource PrimaryComboBoxStyle}"
+                         SelectionChanged="DayComboBox_SelectionChanged"/>
+
+                <!-- Время начала -->
+                <Label Content="Время начала:" 
+                       Style="{StaticResource PrimaryLabelStyle}"
+                       Margin="0,10,0,0"/>
+                <ComboBox x:Name="TimeComboBox"
+                         Style="{StaticResource PrimaryComboBoxStyle}"
+                         DisplayMemberPath="Display"
+                         SelectedValuePath="Time"/>
+
+                <!-- Продолжительность -->
+                <Label Content="Продолжительность:" 
+                       Style="{StaticResource PrimaryLabelStyle}"
+                       Margin="0,10,0,0"/>
+                <TextBlock Text="90 минут (фиксированно)" 
+                          Style="{StaticResource NormalTextStyle}"
+                          Margin="5"/>
+
+                <!-- Модератор -->
+                <Label Content="Модератор:" 
+                       Style="{StaticResource PrimaryLabelStyle}"
+                       Margin="0,10,0,0"/>
+                <ComboBox x:Name="ModeratorComboBox"
+                         DisplayMemberPath="ФИО"
+                         SelectedValuePath="Id"
+                         SelectedValue="{Binding CurrentActivity.МодераторId}"
+                         Style="{StaticResource PrimaryComboBoxStyle}"/>
+
+                <!-- Жюри -->
+                <Label Content="Жюри (пользователи с ролью Жюри):" 
+                       Style="{StaticResource PrimaryLabelStyle}"
+                       Margin="0,10,0,0"/>
+                <Border Style="{StaticResource EventCardStyle}">
+                    <ScrollViewer MaxHeight="150" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl x:Name="JuryItemsControl">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <CheckBox Content="{Binding ФИО}"
+                                             Tag="{Binding Id}"
+                                             IsChecked="{Binding IsSelected}"
+                                             Margin="5,2"
+                                             Style="{StaticResource PrimaryCheckBoxStyle}"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Border>
+                <TextBlock Text="Выберите членов жюри для оценки участников этой активности"
+                          Style="{StaticResource HintTextStyle}"
+                          Margin="5,2,5,0"/>
+
+                <!-- Информация -->
+                <Border Style="{StaticResource EventCardStyle}" Margin="0,15,0,0">
+                    <TextBlock Text="Время начала выбирается с учетом 15-минутного перерыва между активностями в рамках одного дня мероприятия."
+                              Style="{StaticResource NormalTextStyle}"
+                              TextWrapping="Wrap"
+                              FontSize="12"/>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Кнопки -->
+        <StackPanel Grid.Row="2" 
+                   Orientation="Horizontal" 
+                   HorizontalAlignment="Right"
+                   Margin="0,20,0,0">
+            <Button x:Name="SaveButton"
+                    Content="{Binding SaveButtonText}"
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    Padding="15,8"
+                    Click="SaveButton_Click"
+                    IsDefault="True"/>
+
+            <Button x:Name="CancelButton"
+                    Content="Отмена"
+                    Style="{StaticResource SecondaryButtonStyle}"
+                    Padding="15,8"
+                    Margin="10,0,0,0"
+                    Click="CancelButton_Click"
+                    IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window>
