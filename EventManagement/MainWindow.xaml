@@ -29,6 +29,19 @@
                 <StackPanel Grid.Column="0" 
                            Orientation="Horizontal" 
                            VerticalAlignment="Center">
+
+                    <!-- Кнопка "Назад" -->
+                    <Button Grid.Column="1" 
+                        x:Name="BackButton"
+                        Content="← Назад" 
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        Background="White"
+                        Foreground="{StaticResource AccentBrush}"
+                        Padding="10,5"
+                        Margin="10,0,0,0"
+                        HorizontalAlignment="Left"
+                        Click="BackButton_Click"
+                        Visibility="Collapsed"/>
                     <Button x:Name="EventsNavButton"
                             Content="Мероприятия"
                             Style="{StaticResource PrimaryButtonStyle}"
@@ -46,19 +59,6 @@
                             Margin="10,0,0,0"
                             Click="ActivitiesNavButton_Click"/>
                 </StackPanel>
-
-                <!-- Кнопка "Назад" -->
-                <Button Grid.Column="1" 
-                        x:Name="BackButton"
-                        Content="← Назад" 
-                        Style="{StaticResource PrimaryButtonStyle}"
-                        Background="White"
-                        Foreground="{StaticResource AccentBrush}"
-                        Padding="10,5"
-                        Margin="10,0,0,0"
-                        HorizontalAlignment="Left"
-                        Click="BackButton_Click"
-                        Visibility="Collapsed"/>
 
                 <!-- Блок с информацией о пользователе -->
                 <StackPanel Grid.Column="2" 
@@ -93,9 +93,17 @@
                                   FontWeight="Bold"
                                   FontSize="14"
                                   Foreground="White"/>
-                        <TextBlock x:Name="RoleTextBlock" 
-                                  FontSize="12"
-                                  Foreground="#E0E0E0"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Name="RoleTextBlock" 
+                                      FontSize="12"
+                                      Foreground="#E0E0E0"
+                                      VerticalAlignment="Center"/>
+                            <TextBlock x:Name="TimeOfDayTextBlock" 
+                                      FontSize="11"
+                                      Foreground="#CCCCCC"
+                                      Margin="5,0,0,0"
+                                      VerticalAlignment="Center"/>
+                        </StackPanel>
                     </StackPanel>
 
                     <!-- Кнопка "Выйти" -->

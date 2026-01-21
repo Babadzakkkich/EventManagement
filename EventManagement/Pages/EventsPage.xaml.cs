@@ -18,6 +18,7 @@ namespace EventManagement.Pages
         private MainWindow _mainWindow;
         private List<Мероприятия> _allEvents;
         private List<Направления> _directions;
+        private Dictionary<int, BitmapImage> _imageCache = new Dictionary<int, BitmapImage>();
 
         public EventsPage(MainWindow mainWindow)
         {
@@ -36,6 +37,12 @@ namespace EventManagement.Pages
         {
             // Загружаем изображения после загрузки страницы
             LoadEventImages();
+        }
+
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            // Очищаем кеш при выходе со страницы
+            ClearImageCache();
         }
 
         private void LoadData()
@@ -68,14 +75,31 @@ namespace EventManagement.Pages
             }
         }
 
+        private void ClearImageCache()
+        {
+            foreach (var image in _imageCache.Values)
+            {
+                image.StreamSource?.Dispose();
+            }
+            _imageCache.Clear();
+        }
+
         private void UpdateEventsList(IEnumerable<Мероприятия> events)
         {
+            ClearImageCache(); // Очищаем кеш перед обновлением
             EventsItemsControl.ItemsSource = events;
 
             if (!events.Any())
             {
                 // Можно показать сообщение "Мероприятия не найдены"
             }
+
+            // Используем более высокий приоритет для обновления
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                EventsItemsControl.UpdateLayout();
+                LoadEventImages();
+            }), DispatcherPriority.Loaded);
         }
 
         private void LoadEventImages()
@@ -113,6 +137,15 @@ namespace EventManagement.Pages
         {
             try
             {
+                // Проверяем кеш
+                if (_imageCache.TryGetValue(мероприятие.Id, out var cachedImage))
+                {
+                    imageControl.Source = cachedImage;
+                    return;
+                }
+
+                BitmapImage bitmap = null;
+
                 if (!string.IsNullOrEmpty(мероприятие.Фото))
                 {
                     string[] possiblePaths = {
@@ -125,31 +158,68 @@ namespace EventManagement.Pages
                     {
                         if (File.Exists(path))
                         {
-                            imageControl.Source = new BitmapImage(new Uri(path, UriKind.Absolute));
-                            return;
+                            bitmap = new BitmapImage();
+                            bitmap.BeginInit();
+                            bitmap.CacheOption = BitmapCacheOption.OnLoad; // Кешируем в памяти
+                            bitmap.UriSource = new Uri(path, UriKind.Absolute);
+                            bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache; // Игнорируем системный кеш
+                            bitmap.EndInit();
+
+                            // Проверяем, можно ли заморозить изображение
+                            if (bitmap.CanFreeze)
+                            {
+                                bitmap.Freeze(); // Замораживаем для многопоточного доступа
+                            }
+                            break;
                         }
                     }
                 }
 
-                // Загружаем изображение по умолчанию
-                string[] defaultPaths = {
-                    Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", "default-event.png"),
-                    Path.Combine(Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.FullName, "Images", "default-event.png"),
-                    Path.Combine(Environment.CurrentDirectory, "Images", "default-event.png")
-                };
-
-                foreach (var path in defaultPaths)
+                // Если не нашли, загружаем изображение по умолчанию
+                if (bitmap == null)
                 {
-                    if (File.Exists(path))
+                    string[] defaultPaths = {
+                        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", "default-event.png"),
+                        Path.Combine(Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.FullName, "Images", "default-event.png"),
+                        Path.Combine(Environment.CurrentDirectory, "Images", "default-event.png")
+                    };
+
+                    foreach (var path in defaultPaths)
                     {
-                        imageControl.Source = new BitmapImage(new Uri(path, UriKind.Absolute));
-                        return;
+                        if (File.Exists(path))
+                        {
+                            bitmap = new BitmapImage();
+                            bitmap.BeginInit();
+                            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                            bitmap.UriSource = new Uri(path, UriKind.Absolute);
+                            bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                            bitmap.EndInit();
+
+                            if (bitmap.CanFreeze)
+                            {
+                                bitmap.Freeze();
+                            }
+                            break;
+                        }
                     }
                 }
+
+                // Сохраняем в кеш и устанавливаем изображение
+                if (bitmap != null)
+                {
+                    _imageCache[мероприятие.Id] = bitmap;
+                    imageControl.Source = bitmap;
+                }
+                else
+                {
+                    // Если изображение не найдено, устанавливаем null
+                    imageControl.Source = null;
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                // Игнорируем ошибку загрузки изображения
+                Console.WriteLine($"Ошибка загрузки изображения для мероприятия {мероприятие.Id}: {ex.Message}");
+                imageControl.Source = null;
             }
         }
 
@@ -211,14 +281,6 @@ namespace EventManagement.Pages
             }
 
             UpdateEventsList(filteredEvents.ToList());
-
-            // Перезагружаем изображения для отфильтрованных мероприятий
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                // Принудительно обновляем контейнеры
-                EventsItemsControl.UpdateLayout();
-                LoadEventImages();
-            }), DispatcherPriority.Render);
         }
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
@@ -248,13 +310,6 @@ namespace EventManagement.Pages
             DirectionComboBox.SelectedIndex = -1;
             DateFilterPicker.SelectedDate = null;
             UpdateEventsList(_allEvents);
-
-            // Используем задержку для обновления изображений
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                EventsItemsControl.UpdateLayout();
-                LoadEventImages();
-            }), DispatcherPriority.Render);
         }
 
         private void AddEventButton_Click(object sender, RoutedEventArgs e)
@@ -282,10 +337,14 @@ namespace EventManagement.Pages
             }
         }
 
-        // Альтернативный подход: загрузка изображений при генерации контейнера
-        private void EventsItemsControl_Loaded(object sender, RoutedEventArgs e)
+        // Обработчик для события SizeChanged - перезагружаем изображения при изменении размера
+        private void EventsItemsControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            LoadEventImages();
+            // При изменении размера перезагружаем изображения с новыми параметрами
+            if (e.NewSize != e.PreviousSize)
+            {
+                LoadEventImages();
+            }
         }
     }
 }

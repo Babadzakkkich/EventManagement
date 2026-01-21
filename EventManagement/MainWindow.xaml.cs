@@ -59,6 +59,9 @@ namespace EventManagement
                 UsernameTextBlock.Text = CurrentUser.ФИО;
                 RoleTextBlock.Text = CurrentUser.Роли?.Название ?? "Пользователь";
 
+                // Добавляем время суток
+                UpdateTimeOfDay();
+
                 // Загрузка аватарки
                 LoadAvatar();
             }
@@ -66,6 +69,31 @@ namespace EventManagement
             {
                 HideUserInfo();
             }
+        }
+
+        private void UpdateTimeOfDay()
+        {
+            var currentTime = DateTime.Now.TimeOfDay;
+            string timeOfDay;
+
+            if (currentTime >= new TimeSpan(5, 0, 0) && currentTime < new TimeSpan(12, 0, 0))
+            {
+                timeOfDay = "утро";
+            }
+            else if (currentTime >= new TimeSpan(12, 0, 0) && currentTime < new TimeSpan(18, 0, 0))
+            {
+                timeOfDay = "день";
+            }
+            else if (currentTime >= new TimeSpan(18, 0, 0) && currentTime < new TimeSpan(23, 0, 0))
+            {
+                timeOfDay = "вечер";
+            }
+            else
+            {
+                timeOfDay = "ночь";
+            }
+
+            TimeOfDayTextBlock.Text = timeOfDay;
         }
 
         private void LoadAvatar()
@@ -106,6 +134,7 @@ namespace EventManagement
             UserInfoPanel.Visibility = Visibility.Collapsed;
             UsernameTextBlock.Text = string.Empty;
             RoleTextBlock.Text = string.Empty;
+            TimeOfDayTextBlock.Text = string.Empty;
             AvatarImage.Source = null;
         }
 
