@@ -25,21 +25,17 @@
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
                     <TextBox x:Name="SearchTextBox" 
                             Style="{StaticResource PrimaryTextBoxStyle}"
                             Margin="0,0,10,0"
                             TextChanged="SearchTextBox_TextChanged"
-                            Padding="10"/>
-
-                    <Button x:Name="SearchButton"
-                            Grid.Column="1"
-                            Content="Поиск"
-                            Style="{StaticResource PrimaryButtonStyle}"
-                            Padding="15,5"
-                            Click="SearchButton_Click"/>
+                            Padding="10">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding SearchCommand}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
                 </Grid>
 
                 <!-- Фильтры -->

@@ -19,11 +19,16 @@ namespace EventManagement.Pages
         private List<Мероприятия> _allEvents;
         private List<Направления> _directions;
         private Dictionary<int, BitmapImage> _imageCache = new Dictionary<int, BitmapImage>();
+        private DispatcherTimer _searchTimer;
 
         public EventsPage(MainWindow mainWindow)
         {
             InitializeComponent();
             _mainWindow = mainWindow;
+
+            // Инициализируем таймер для поиска с задержкой
+            InitializeSearchTimer();
+
             LoadData();
 
             // Показываем панель организатора если пользователь авторизован и является организатором
@@ -31,6 +36,13 @@ namespace EventManagement.Pages
             {
                 OrganizerPanel.Visibility = Visibility.Visible;
             }
+        }
+
+        private void InitializeSearchTimer()
+        {
+            _searchTimer = new DispatcherTimer();
+            _searchTimer.Interval = TimeSpan.FromMilliseconds(500); // Задержка 500 мс
+            _searchTimer.Tick += SearchTimer_Tick;
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -41,8 +53,14 @@ namespace EventManagement.Pages
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
-            // Очищаем кеш при выходе со страницы
+            // Очищаем кеш и останавливаем таймер при выходе со страницы
             ClearImageCache();
+
+            if (_searchTimer != null)
+            {
+                _searchTimer.Stop();
+                _searchTimer.Tick -= SearchTimer_Tick;
+            }
         }
 
         private void LoadData()
@@ -283,15 +301,20 @@ namespace EventManagement.Pages
             UpdateEventsList(filteredEvents.ToList());
         }
 
-        private void SearchButton_Click(object sender, RoutedEventArgs e)
+        private void SearchTimer_Tick(object sender, EventArgs e)
         {
+            // Останавливаем таймер
+            _searchTimer.Stop();
+
+            // Применяем фильтры
             ApplyFilters();
         }
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            // Можно добавить задержку для live search
-            // ApplyFilters();
+            // Перезапускаем таймер при каждом изменении текста
+            _searchTimer.Stop();
+            _searchTimer.Start();
         }
 
         private void DirectionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -344,6 +367,17 @@ namespace EventManagement.Pages
             if (e.NewSize != e.PreviousSize)
             {
                 LoadEventImages();
+            }
+        }
+
+        // Обработчик нажатия Enter в текстовом поле (опционально)
+        private void SearchTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                // Останавливаем таймер и сразу применяем фильтры
+                _searchTimer.Stop();
+                ApplyFilters();
             }
         }
     }
