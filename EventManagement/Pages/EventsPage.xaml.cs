@@ -26,12 +26,10 @@ namespace EventManagement.Pages
             InitializeComponent();
             _mainWindow = mainWindow;
 
-            // Инициализируем таймер для поиска с задержкой
             InitializeSearchTimer();
 
             LoadData();
 
-            // Показываем панель организатора если пользователь авторизован и является организатором
             if (_mainWindow.CurrentUser != null && _mainWindow.CurrentUser.Роли?.Название == "Организатор")
             {
                 OrganizerPanel.Visibility = Visibility.Visible;
@@ -41,19 +39,17 @@ namespace EventManagement.Pages
         private void InitializeSearchTimer()
         {
             _searchTimer = new DispatcherTimer();
-            _searchTimer.Interval = TimeSpan.FromMilliseconds(500); // Задержка 500 мс
+            _searchTimer.Interval = TimeSpan.FromMilliseconds(500);
             _searchTimer.Tick += SearchTimer_Tick;
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            // Загружаем изображения после загрузки страницы
             LoadEventImages();
         }
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
-            // Очищаем кеш и останавливаем таймер при выходе со страницы
             ClearImageCache();
 
             if (_searchTimer != null)
@@ -69,21 +65,18 @@ namespace EventManagement.Pages
             {
                 using (var context = new Entities())
                 {
-                    // Загружаем мероприятия с связанными данными, включая победителя
                     _allEvents = context.Мероприятия
                         .Include(e => e.Города)
                         .Include(e => e.Направления)
-                        .Include(e => e.Пользователи) // Организатор
-                        .Include(e => e.Пользователи1) // Победитель
+                        .Include(e => e.Пользователи)
+                        .Include(e => e.Пользователи1)
                         .ToList();
 
-                    // Загружаем направления для фильтра
                     _directions = context.Направления.ToList();
                     DirectionComboBox.ItemsSource = _directions;
                     DirectionComboBox.DisplayMemberPath = "Название";
                     DirectionComboBox.SelectedIndex = -1;
 
-                    // Показываем все мероприятия
                     UpdateEventsList(_allEvents);
                 }
             }
@@ -104,15 +97,10 @@ namespace EventManagement.Pages
 
         private void UpdateEventsList(IEnumerable<Мероприятия> events)
         {
-            ClearImageCache(); // Очищаем кеш перед обновлением
+            ClearImageCache();
             EventsItemsControl.ItemsSource = events;
 
-            if (!events.Any())
-            {
-                // Можно показать сообщение "Мероприятия не найдены"
-            }
 
-            // Используем более высокий приоритет для обновления
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 EventsItemsControl.UpdateLayout();
@@ -122,21 +110,17 @@ namespace EventManagement.Pages
 
         private void LoadEventImages()
         {
-            // Ждем обновления UI перед загрузкой изображений
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 try
                 {
-                    // Загружаем изображения для всех карточек мероприятий
                     foreach (var item in EventsItemsControl.Items)
                     {
                         var container = EventsItemsControl.ItemContainerGenerator.ContainerFromItem(item);
 
-                        // Если контейнер еще не создан, пропускаем
                         if (container == null)
                             continue;
 
-                        // Ищем Image в контейнере
                         var image = FindVisualChild<Image>(container);
                         if (image != null && item is Мероприятия мероприятие)
                         {
@@ -155,7 +139,6 @@ namespace EventManagement.Pages
         {
             try
             {
-                // Проверяем кеш
                 if (_imageCache.TryGetValue(мероприятие.Id, out var cachedImage))
                 {
                     imageControl.Source = cachedImage;
@@ -178,22 +161,20 @@ namespace EventManagement.Pages
                         {
                             bitmap = new BitmapImage();
                             bitmap.BeginInit();
-                            bitmap.CacheOption = BitmapCacheOption.OnLoad; // Кешируем в памяти
+                            bitmap.CacheOption = BitmapCacheOption.OnLoad;
                             bitmap.UriSource = new Uri(path, UriKind.Absolute);
-                            bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache; // Игнорируем системный кеш
+                            bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
                             bitmap.EndInit();
 
-                            // Проверяем, можно ли заморозить изображение
                             if (bitmap.CanFreeze)
                             {
-                                bitmap.Freeze(); // Замораживаем для многопоточного доступа
+                                bitmap.Freeze();
                             }
                             break;
                         }
                     }
                 }
 
-                // Если не нашли, загружаем изображение по умолчанию
                 if (bitmap == null)
                 {
                     string[] defaultPaths = {
@@ -222,7 +203,6 @@ namespace EventManagement.Pages
                     }
                 }
 
-                // Сохраняем в кеш и устанавливаем изображение
                 if (bitmap != null)
                 {
                     _imageCache[мероприятие.Id] = bitmap;
@@ -230,7 +210,6 @@ namespace EventManagement.Pages
                 }
                 else
                 {
-                    // Если изображение не найдено, устанавливаем null
                     imageControl.Source = null;
                 }
             }
@@ -245,14 +224,12 @@ namespace EventManagement.Pages
         {
             if (parent == null) return null;
 
-            // Пытаемся найти элемент по имени "EventImage"
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
             {
                 var child = VisualTreeHelper.GetChild(parent, i);
 
                 if (child is T result)
                 {
-                    // Проверяем имя элемента, если это Image
                     if (typeof(T) == typeof(Image))
                     {
                         if (child is FrameworkElement element && element.Name == "EventImage")
@@ -275,7 +252,6 @@ namespace EventManagement.Pages
         {
             var filteredEvents = _allEvents.AsQueryable();
 
-            // Фильтр по поисковому запросу
             if (!string.IsNullOrWhiteSpace(SearchTextBox.Text))
             {
                 var searchText = SearchTextBox.Text.ToLower();
@@ -285,13 +261,11 @@ namespace EventManagement.Pages
                     ev.Города.Название.ToLower().Contains(searchText));
             }
 
-            // Фильтр по направлению
             if (DirectionComboBox.SelectedItem is Направления selectedDirection)
             {
                 filteredEvents = filteredEvents.Where(ev => ev.НаправлениеId == selectedDirection.Id);
             }
 
-            // Фильтр по дате
             if (DateFilterPicker.SelectedDate.HasValue)
             {
                 var selectedDate = DateFilterPicker.SelectedDate.Value.Date;
@@ -303,16 +277,13 @@ namespace EventManagement.Pages
 
         private void SearchTimer_Tick(object sender, EventArgs e)
         {
-            // Останавливаем таймер
             _searchTimer.Stop();
 
-            // Применяем фильтры
             ApplyFilters();
         }
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            // Перезапускаем таймер при каждом изменении текста
             _searchTimer.Stop();
             _searchTimer.Start();
         }
@@ -342,7 +313,6 @@ namespace EventManagement.Pages
 
             if (addEventWindow.ShowDialog() == true)
             {
-                // Обновляем список мероприятий
                 LoadData();
             }
         }
@@ -351,7 +321,6 @@ namespace EventManagement.Pages
         {
             if (sender is Border border && border.Tag is int eventId)
             {
-                // Используем другое имя переменной, чтобы избежать конфликта с параметром e
                 var мероприятие = _allEvents.FirstOrDefault(ev => ev.Id == eventId);
                 if (мероприятие != null)
                 {
@@ -360,22 +329,18 @@ namespace EventManagement.Pages
             }
         }
 
-        // Обработчик для события SizeChanged - перезагружаем изображения при изменении размера
         private void EventsItemsControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            // При изменении размера перезагружаем изображения с новыми параметрами
             if (e.NewSize != e.PreviousSize)
             {
                 LoadEventImages();
             }
         }
 
-        // Обработчик нажатия Enter в текстовом поле (опционально)
         private void SearchTextBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                // Останавливаем таймер и сразу применяем фильтры
                 _searchTimer.Stop();
                 ApplyFilters();
             }

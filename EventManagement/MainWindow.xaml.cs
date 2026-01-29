@@ -59,10 +59,8 @@ namespace EventManagement
                 UsernameTextBlock.Text = CurrentUser.ФИО;
                 RoleTextBlock.Text = CurrentUser.Роли?.Название ?? "Пользователь";
 
-                // Добавляем время суток
                 UpdateTimeOfDay();
 
-                // Загрузка аватарки
                 LoadAvatar();
             }
             else
@@ -102,7 +100,6 @@ namespace EventManagement
             {
                 if (CurrentUser != null && !string.IsNullOrEmpty(CurrentUser.Фото))
                 {
-                    // Попробуем несколько путей
                     string[] possiblePaths = {
                         Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", "Avatars", CurrentUser.Фото),
                         Path.Combine(Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.FullName, "Images", "Avatars", CurrentUser.Фото),
@@ -119,12 +116,10 @@ namespace EventManagement
                     }
                 }
 
-                // Если аватарки нет, показываем заглушку
                 AvatarImage.Source = new BitmapImage(new Uri("pack://application:,,,/Images/default-avatar.png"));
             }
             catch (Exception)
             {
-                // В случае ошибки просто оставляем пустое изображение
                 AvatarImage.Source = null;
             }
         }
@@ -231,7 +226,6 @@ namespace EventManagement
             MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
-        // Метод для обновления аватарки после редактирования профиля
         public void UpdateAvatar()
         {
             LoadAvatar();

@@ -36,20 +36,17 @@ namespace EventManagement.Pages
             {
                 using (var context = new Entities())
                 {
-                    // Загружаем все активности с связанными данными
                     _allActivities = context.Активности
                         .Include(a => a.Мероприятия)
-                        .Include(a => a.Пользователи) // Модератор
+                        .Include(a => a.Пользователи)
                         .Include(a => a.ЖюриАктивности)
                         .Include(a => a.УчастникиАктивностей)
                         .ToList();
 
-                    // Загружаем мероприятия для фильтра
                     _events = context.Мероприятия
                         .OrderBy(e => e.Название)
                         .ToList();
 
-                    // Добавляем "Все мероприятия" в начало списка
                     var allEventsItem = new Мероприятия
                     {
                         Id = -1,
@@ -61,12 +58,10 @@ namespace EventManagement.Pages
                     EventFilterComboBox.DisplayMemberPath = "Название";
                     EventFilterComboBox.SelectedIndex = 0;
 
-                    // Заполняем фильтр по дням
                     var days = new List<object> { "Все дни", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
                     DayFilterComboBox.ItemsSource = days;
                     DayFilterComboBox.SelectedIndex = 0;
 
-                    // Устанавливаем сортировку по умолчанию
                     SortComboBox.SelectedIndex = 0;
                 }
             }
@@ -101,11 +96,9 @@ namespace EventManagement.Pages
                 var activities = ApplyFiltersAndSorting(_allActivities);
                 ActivitiesItemsControl.ItemsSource = activities;
 
-                // Показываем/скрываем сообщение об отсутствии активностей
                 NoActivitiesText.Visibility = activities.Any() ?
                     Visibility.Collapsed : Visibility.Visible;
 
-                // Обновляем статистику для каждой карточки
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
                     UpdateActivityCardsStats();
@@ -121,7 +114,6 @@ namespace EventManagement.Pages
         {
             var result = activities.AsEnumerable();
 
-            // Поиск по всем текстовым полям
             if (!string.IsNullOrWhiteSpace(SearchTextBox.Text))
             {
                 var searchText = SearchTextBox.Text.ToLower();
@@ -134,29 +126,25 @@ namespace EventManagement.Pages
                 );
             }
 
-            // Фильтр по мероприятию
             if (EventFilterComboBox.SelectedItem is Мероприятия selectedEvent && selectedEvent.Id != -1)
             {
                 result = result.Where(a => a.МероприятиеId == selectedEvent.Id);
             }
 
-            // Фильтр по дню
             if (DayFilterComboBox.SelectedItem != null && DayFilterComboBox.SelectedIndex > 0)
             {
                 int selectedDay = (int)DayFilterComboBox.SelectedItem;
                 result = result.Where(a => a.День == selectedDay);
             }
 
-            // Сортировка
-            if (SortComboBox.SelectedIndex == 1) // Время ↑ (возрастание)
+            if (SortComboBox.SelectedIndex == 1)
             {
                 result = result.OrderBy(a => a.ВремяНачала);
             }
-            else if (SortComboBox.SelectedIndex == 2) // Время ↓ (убывание)
+            else if (SortComboBox.SelectedIndex == 2)
             {
                 result = result.OrderByDescending(a => a.ВремяНачала);
             }
-            else // По умолчанию (по мероприятию, затем по дню, затем по времени)
             {
                 result = result.OrderBy(a => a.Мероприятия.Название)
                                .ThenBy(a => a.День)
@@ -173,7 +161,6 @@ namespace EventManagement.Pages
                 var container = ActivitiesItemsControl.ItemContainerGenerator.ContainerFromItem(item);
                 if (container != null && item is Активности activity)
                 {
-                    // Находим TextBlock'и для статистики
                     var juryTextBlock = FindVisualChild<TextBlock>(container, "JuryCountText");
                     var participantsTextBlock = FindVisualChild<TextBlock>(container, "ParticipantsCountText");
 
@@ -214,7 +201,6 @@ namespace EventManagement.Pages
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            // Live search с небольшой задержкой
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 LoadActivities();
@@ -252,7 +238,6 @@ namespace EventManagement.Pages
 
             if (addActivityWindow.ShowDialog() == true)
             {
-                // Обновляем список активностей
                 LoadData();
                 LoadActivities();
             }
@@ -265,7 +250,6 @@ namespace EventManagement.Pages
                 var активность = _allActivities.FirstOrDefault(a => a.Id == activityId);
                 if (активность != null)
                 {
-                    // Проверяем, является ли пользователь жюри этой активности
                     if (_mainWindow.CurrentUser != null &&
                         _mainWindow.CurrentUser.Роли?.Название == "Жюри")
                     {
@@ -274,7 +258,6 @@ namespace EventManagement.Pages
 
                         if (isJury)
                         {
-                            // Предлагаем сразу перейти к оценке участников
                             var result = MessageBox.Show("Вы являетесь жюри этой активности. Хотите перейти к оценке участников?",
                                                        "Быстрый доступ",
                                                        MessageBoxButton.YesNo,
